@@ -61,34 +61,50 @@
                 </StackPanel>
             </Grid>
 
-            <StackPanel Grid.Column="1" Margin="16" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
-                <ui:CardAction Icon="ArrowRight12" TabIndex="0" Command="{Binding LaunchRobloxCommand, Mode=OneTime}">
-                    <StackPanel>
-                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                    </StackPanel>
-                </ui:CardAction>
+            <Grid Grid.Column="1" Margin="16" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <ui:CardAction Margin="0,8,0,0" Icon="Wrench24" Command="{Binding LaunchRobloxStudioCommand, Mode=OneTime}">
-                    <StackPanel>
-                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_LaunchRobloxStudio}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                    </StackPanel>
-                </ui:CardAction>
+                <StackPanel Grid.Row="0" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
+                    <ui:CardAction Icon="ArrowRight12" TabIndex="0" Command="{Binding LaunchRobloxCommand, Mode=OneTime}" Visibility="{Binding LaunchRobloxCardVisibility, Mode=OneTime}">
+                        <StackPanel>
+                            <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        </StackPanel>
+                    </ui:CardAction>
 
-                <ui:CardAction Margin="0,8,0,0" TabIndex="1" Icon="Settings28" Command="{Binding LaunchSettingsCommand, Mode=OneTime}">
-                    <StackPanel>
-                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_ConfigureSettings}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                    </StackPanel>
-                </ui:CardAction>
+                    <ui:CardAction Margin="0,8,0,0" Icon="Wrench24" Command="{Binding LaunchRobloxStudioCommand, Mode=OneTime}">
+                        <StackPanel>
+                            <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_LaunchRobloxStudio}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        </StackPanel>
+                    </ui:CardAction>
 
-                <Border Margin="16" />
+                    <ui:CardAction Margin="0,8,0,0" TabIndex="1" Icon="Settings28" Command="{Binding LaunchSettingsCommand, Mode=OneTime}">
+                        <StackPanel>
+                            <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_ConfigureSettings}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        </StackPanel>
+                    </ui:CardAction>
 
-                <ui:CardAction Margin="0,8,0,0" TabIndex="2" Icon="BookQuestionMark24" Command="models:GlobalViewModel.OpenWebpageCommand" CommandParameter="https://bloxstraplabs.com/wiki/help/">
-                    <StackPanel>
-                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_Wiki_Title}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                        <TextBlock Margin="0,2,0,0" FontSize="12" Text="{x:Static resources:Strings.LaunchMenu_Wiki_Description}" Padding="0,0,16,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                    </StackPanel>
-                </ui:CardAction>
-            </StackPanel>
+                    <Border Margin="16" />
+
+                    <ui:CardAction Margin="0,8,0,0" TabIndex="2" Icon="BookQuestionMark24" Command="models:GlobalViewModel.OpenWebpageCommand" CommandParameter="https://bloxstraplabs.com/wiki/help/">
+                        <StackPanel>
+                            <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_Wiki_Title}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <TextBlock Margin="0,2,0,0" FontSize="12" Text="{x:Static resources:Strings.LaunchMenu_Wiki_Description}" Padding="0,0,16,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                        </StackPanel>
+                    </ui:CardAction>
+                </StackPanel>
+
+                <ui:Button Grid.Row="1"
+                           Margin="0,16,0,0"
+                           HorizontalAlignment="Stretch"
+                           Appearance="Primary"
+                           Icon="ArrowDownload24"
+                           Content="{x:Static resources:Strings.LaunchMenu_SaveAndInstall}"
+                           Command="{Binding SaveAndInstallCommand, Mode=OneTime}"
+                           Visibility="{Binding SaveAndInstallBarVisibility, Mode=OneTime}" />
+            </Grid>
         </Grid>
     </Grid>
 </base:WpfUiWindow>

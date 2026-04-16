@@ -10,11 +10,17 @@ namespace Bloxstrap.UI.ViewModels.Installer
     {
         public string Version => string.Format(Strings.Menu_About_Version, App.Version);
 
+        public Visibility LaunchRobloxCardVisibility => App.IsPlayerInstalled ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility SaveAndInstallBarVisibility => App.IsPlayerInstalled ? Visibility.Collapsed : Visibility.Visible;
+
         public ICommand LaunchSettingsCommand => new RelayCommand(LaunchSettings);
 
         public ICommand LaunchRobloxCommand => new RelayCommand(LaunchRoblox);
 
         public ICommand LaunchRobloxStudioCommand => new RelayCommand(LaunchRobloxStudio);
+
+        public ICommand SaveAndInstallCommand => new RelayCommand(SaveAndInstall);
 
         public ICommand LaunchAboutCommand => new RelayCommand(LaunchAbout);
 
@@ -25,6 +31,8 @@ namespace Bloxstrap.UI.ViewModels.Installer
         private void LaunchRoblox() => CloseWindowRequest?.Invoke(this, NextAction.LaunchRoblox);
 
         private void LaunchRobloxStudio() => CloseWindowRequest?.Invoke(this, NextAction.LaunchRobloxStudio);
+
+        private void SaveAndInstall() => CloseWindowRequest?.Invoke(this, NextAction.SaveAndInstall);
 
         private void LaunchAbout() => new MainWindow().ShowDialog();
     }

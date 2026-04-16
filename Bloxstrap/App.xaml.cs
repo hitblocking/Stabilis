@@ -244,6 +244,39 @@ namespace Bloxstrap
             }
         }
 
+        /// <summary>
+        /// When the uninstall registry entry is missing but the app was launched from an on-disk install
+        /// (e.g. user deleted the key, or migration failed), recover the base directory so uninstall can run.
+        /// </summary>
+        private static string? TryRecoverInstallLocationFromFilesystem()
+        {
+            if (Directory.GetParent(Paths.Process)?.FullName is not string exeDir)
+                return null;
+
+            string primaryExe = Path.Combine(exeDir, $"{ProjectName}.exe");
+            if (!File.Exists(primaryExe))
+                return null;
+
+            bool hasConfig =
+                File.Exists(Path.Combine(exeDir, "Settings.json"))
+                || File.Exists(Path.Combine(exeDir, "State.json"));
+
+            if (!hasConfig)
+                return null;
+
+            try
+            {
+                if (string.Equals(Path.GetFullPath(Paths.Process), Path.GetFullPath(primaryExe), StringComparison.OrdinalIgnoreCase))
+                    return exeDir;
+            }
+            catch
+            {
+                return null;
+            }
+
+            return null;
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             const string LOG_IDENT = "App::OnStartup";
@@ -333,6 +366,17 @@ namespace Bloxstrap
                 }
             }
 
+            if (installLocation is null)
+            {
+                string? recovered = TryRecoverInstallLocationFromFilesystem();
+                if (recovered is not null)
+                {
+                    installLocation = recovered;
+                    fixInstallLocation = true;
+                    Logger.WriteLine(LOG_IDENT, $"Recovered install location without registry entry: '{recovered}'");
+                }
+            }
+
             if (fixInstallLocation && installLocation is not null)
             {
                 var installer = new Installer
@@ -355,6 +399,18 @@ namespace Bloxstrap
 
             if (installLocation is null)
             {
+                if (LaunchSettings.UninstallFlag.Active)
+                {
+                    Logger.Initialize(true);
+                    Logger.WriteLine(LOG_IDENT, "Uninstall requested but no installation directory could be resolved");
+
+                    if (!LaunchSettings.QuietFlag.Active)
+                        Frontend.ShowMessageBox(Strings.App_Uninstall_NoInstallationFound, MessageBoxImage.Information);
+
+                    Terminate(ErrorCode.ERROR_SUCCESS);
+                    return;
+                }
+
                 Logger.Initialize(true);
                 Logger.WriteLine(LOG_IDENT, "Not installed, launching the installer");
                 AssertWindowsOSVersion(); // prevent new installs from unsupported operating systems

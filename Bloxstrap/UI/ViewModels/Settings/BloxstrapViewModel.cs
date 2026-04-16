@@ -36,6 +36,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public ICommand ExportDataCommand => new RelayCommand(ExportData);
 
+        public ICommand UninstallCommand => new RelayCommand(Uninstall);
+
+        private void Uninstall() => LaunchHandler.LaunchUninstaller();
+
         private void ExportData()
         {
             string timestamp = DateTime.UtcNow.ToString("yyyyMMdd'T'HHmmss'Z'");

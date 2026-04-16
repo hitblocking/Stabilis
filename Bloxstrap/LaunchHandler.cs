@@ -10,6 +10,28 @@ namespace Bloxstrap
 {
     public static class LaunchHandler
     {
+        public static void SaveApplicationSettings()
+        {
+            const string LOG_IDENT = "LaunchHandler::SaveApplicationSettings";
+
+            App.Settings.Save();
+            App.State.Save();
+            App.FastFlags.Save();
+
+            foreach (var pair in App.PendingSettingTasks)
+            {
+                var task = pair.Value;
+
+                if (task.Changed)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Executing pending task '{task}'");
+                    task.Execute();
+                }
+            }
+
+            App.PendingSettingTasks.Clear();
+        }
+
         public static void ProcessNextAction(NextAction action, bool isUnfinishedInstall = false)
         {
             const string LOG_IDENT = "LaunchHandler::ProcessNextAction";
@@ -29,6 +51,12 @@ namespace Bloxstrap
                 case NextAction.LaunchRobloxStudio:
                     App.Logger.WriteLine(LOG_IDENT, "Opening Roblox Studio");
                     LaunchRoblox(LaunchMode.Studio);
+                    break;
+
+                case NextAction.SaveAndInstall:
+                    App.Logger.WriteLine(LOG_IDENT, "Saving settings and installing Roblox");
+                    SaveApplicationSettings();
+                    LaunchRoblox(LaunchMode.Player);
                     break;
 
                 default:

@@ -75,5 +75,11 @@
                 <CheckBox Grid.Column="1" Name="ShouldExportLogs" Content="{x:Static resources:Strings.Menu_Bloxstrap_ExportData_ExportLogs}" IsChecked="{Binding ShouldExportLogs}" />
             </Grid>
         </ui:CardExpander>
+
+        <controls:OptionControl Margin="0,16,0,0"
+            Header="{x:Static resources:Strings.Menu_Bloxstrap_Uninstall_Title}"
+            Description="{x:Static resources:Strings.Menu_Bloxstrap_Uninstall_Description}">
+            <ui:Button MinWidth="120" HorizontalAlignment="Left" Icon="UninstallApp24" Appearance="Danger" Content="{x:Static resources:Strings.Menu_Bloxstrap_Uninstall_Button}" Command="{Binding UninstallCommand, Mode=OneTime}" />
+        </controls:OptionControl>
     </StackPanel>
 </ui:UiPage>

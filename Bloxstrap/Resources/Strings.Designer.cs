@@ -159,7 +159,16 @@ namespace Bloxstrap.Resources {
                 return ResourceManager.GetString("App.OSDeprecation.Win7_81", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not find a Stabilis installation to remove..
+        /// </summary>
+        public static string App_Uninstall_NoInstallationFound {
+            get {
+                return ResourceManager.GetString("App.Uninstall.NoInstallationFound", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Bloxstrap was unable to automatically update to version {0}. Please update it manually by downloading and running it from the website..
         /// </summary>
@@ -2132,6 +2141,15 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save &amp; Install.
+        /// </summary>
+        public static string LaunchMenu_SaveAndInstall {
+            get {
+                return ResourceManager.GetString("LaunchMenu.SaveAndInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Having an issue?.
         /// </summary>
         public static string LaunchMenu_Wiki_Title {
@@ -2616,7 +2634,34 @@ namespace Bloxstrap.Resources {
                 return ResourceManager.GetString("Menu.Bloxstrap.Analytics.Title", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall….
+        /// </summary>
+        public static string Menu_Bloxstrap_Uninstall_Button {
+            get {
+                return ResourceManager.GetString("Menu.Bloxstrap.Uninstall.Button", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove Stabilis, shortcuts, and uninstall registry entries. You will be asked whether to keep your settings and mods folder..
+        /// </summary>
+        public static string Menu_Bloxstrap_Uninstall_Description {
+            get {
+                return ResourceManager.GetString("Menu.Bloxstrap.Uninstall.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall Stabilis.
+        /// </summary>
+        public static string Menu_Bloxstrap_Uninstall_Title {
+            get {
+                return ResourceManager.GetString("Menu.Bloxstrap.Uninstall.Title", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Configure options related to Bloxstrap&apos;s behaviour itself..
         /// </summary>

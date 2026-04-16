@@ -925,6 +925,9 @@ Stabilis was installed at "{1}".</value>
   <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
     <value>See the Wiki for help</value>
   </data>
+  <data name="LaunchMenu.SaveAndInstall" xml:space="preserve">
+    <value>Save &amp; Install</value>
+  </data>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>You currently do not have the WebView2 runtime installed. Some Roblox features will not work properly without it, such as the desktop app. Would you like to download it now?</value>
   </data>
@@ -1089,6 +1092,15 @@ Please manually delete Stabilis.exe from the install location or try restarting 
   <data name="Menu.Bloxstrap.Analytics.Description" xml:space="preserve">
     <value>It's anonymous and nothing evil, promise. For insight on what we collect and why, see our [privacy policy]({0}).</value>
   </data>
+  <data name="Menu.Bloxstrap.Uninstall.Title" xml:space="preserve">
+    <value>Uninstall Stabilis</value>
+  </data>
+  <data name="Menu.Bloxstrap.Uninstall.Description" xml:space="preserve">
+    <value>Remove Stabilis, shortcuts, and uninstall registry entries. You will be asked whether to keep your settings and mods folder.</value>
+  </data>
+  <data name="Menu.Bloxstrap.Uninstall.Button" xml:space="preserve">
+    <value>Uninstall…</value>
+  </data>
   <data name="Common.Analytics" xml:space="preserve">
     <value>Analytics</value>
   </data>
@@ -1159,6 +1171,9 @@ Please close any applications that may be using Roblox's files, and relaunch.</v
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox no longer supports Windows 7 or 8.1. To continue playing Roblox, please upgrade to Windows 10 or newer.</value>
+  </data>
+  <data name="App.Uninstall.NoInstallationFound" xml:space="preserve">
+    <value>Could not find a Stabilis installation to remove.</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Failed to extract files</value>
