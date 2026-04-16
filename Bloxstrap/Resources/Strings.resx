@@ -928,6 +928,12 @@ Stabilis was installed at "{1}".</value>
   <data name="LaunchMenu.SaveAndInstall" xml:space="preserve">
     <value>Save &amp; Install</value>
   </data>
+  <data name="LaunchMenu.InstallAndSave" xml:space="preserve">
+    <value>Install &amp; Save</value>
+  </data>
+  <data name="LaunchMenu.SaveAndLaunchRoblox" xml:space="preserve">
+    <value>Save &amp; Launch Roblox</value>
+  </data>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>You currently do not have the WebView2 runtime installed. Some Roblox features will not work properly without it, such as the desktop app. Would you like to download it now?</value>
   </data>

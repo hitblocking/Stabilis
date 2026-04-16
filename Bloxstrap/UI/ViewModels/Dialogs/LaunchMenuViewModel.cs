@@ -12,7 +12,9 @@ namespace Bloxstrap.UI.ViewModels.Installer
 
         public Visibility LaunchRobloxCardVisibility => App.IsPlayerInstalled ? Visibility.Visible : Visibility.Collapsed;
 
-        public Visibility SaveAndInstallBarVisibility => App.IsPlayerInstalled ? Visibility.Collapsed : Visibility.Visible;
+        public string SaveAndInstallButtonText => App.IsPlayerInstalled
+            ? Strings.LaunchMenu_SaveAndLaunchRoblox
+            : Strings.LaunchMenu_InstallAndSave;
 
         public ICommand LaunchSettingsCommand => new RelayCommand(LaunchSettings);
 

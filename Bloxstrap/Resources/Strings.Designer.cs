@@ -2150,6 +2150,24 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install &amp; Save.
+        /// </summary>
+        public static string LaunchMenu_InstallAndSave {
+            get {
+                return ResourceManager.GetString("LaunchMenu.InstallAndSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save &amp; Launch Roblox.
+        /// </summary>
+        public static string LaunchMenu_SaveAndLaunchRoblox {
+            get {
+                return ResourceManager.GetString("LaunchMenu.SaveAndLaunchRoblox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Having an issue?.
         /// </summary>
         public static string LaunchMenu_Wiki_Title {

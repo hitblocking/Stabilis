@@ -101,9 +101,8 @@
                            HorizontalAlignment="Stretch"
                            Appearance="Primary"
                            Icon="ArrowDownload24"
-                           Content="{x:Static resources:Strings.LaunchMenu_SaveAndInstall}"
-                           Command="{Binding SaveAndInstallCommand, Mode=OneTime}"
-                           Visibility="{Binding SaveAndInstallBarVisibility, Mode=OneTime}" />
+                           Content="{Binding SaveAndInstallButtonText, Mode=OneTime}"
+                           Command="{Binding SaveAndInstallCommand, Mode=OneTime}" />
             </Grid>
         </Grid>
     </Grid>
