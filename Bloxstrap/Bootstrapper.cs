@@ -567,6 +567,38 @@ namespace Bloxstrap
                 WorkingDirectory = AppData.Directory
             };
 
+            // Apply WebView2 framerate unlock arguments for Roblox when manual FPS override is active.
+            // This only affects the launched Roblox process and its WebView2 instance.
+            bool shouldUncapWebView2 =
+                _launchMode == LaunchMode.Player
+                && App.Settings.Prop.PerformanceManualFPSOverride
+                && App.Settings.Prop.PerformanceFPSCap.HasValue
+                && App.Settings.Prop.PerformanceFPSCap.Value > 0;
+
+            if (shouldUncapWebView2)
+            {
+                const string envKey = "WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS";
+                const string uncapArgs = "--disable-frame-rate-limit";
+
+                try
+                {
+                    string? existingArgs = startInfo.EnvironmentVariables[envKey];
+                    if (String.IsNullOrWhiteSpace(existingArgs))
+                    {
+                        startInfo.EnvironmentVariables[envKey] = uncapArgs;
+                    }
+                    else if (!existingArgs.Contains(uncapArgs, StringComparison.OrdinalIgnoreCase))
+                    {
+                        startInfo.EnvironmentVariables[envKey] = $"{existingArgs} {uncapArgs}";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to set WebView2 framerate arguments");
+                    App.Logger.WriteException(LOG_IDENT, ex);
+                }
+            }
+
             if (_launchMode == LaunchMode.Player && ShouldRunAsAdmin())
             {
                 startInfo.Verb = "runas";
