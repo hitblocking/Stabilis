@@ -12,6 +12,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public string Display { get; init; } = "";
     }
 
+    public sealed class LabeledEnumChoice<T> where T : struct, Enum
+    {
+        public T Value { get; init; }
+        public string Display { get; init; } = "";
+    }
+
     public class PerformanceViewModel : NotifyPropertyChangedViewModel
     {
         public static readonly LabeledIntChoice[] CleanerRetentionChoices =
@@ -30,6 +36,21 @@ namespace Bloxstrap.UI.ViewModels.Settings
             new() { Value = 15, Display = "Every 15 minutes" },
             new() { Value = 30, Display = "Every 30 minutes" },
             new() { Value = 60, Display = "Every 60 minutes" }
+        };
+
+        public static readonly LabeledEnumChoice<RobloxProcessPriority>[] RobloxProcessPriorityChoices =
+        {
+            new() { Value = RobloxProcessPriority.Normal, Display = "Normal" },
+            new() { Value = RobloxProcessPriority.AboveNormal, Display = "Above Normal" },
+            new() { Value = RobloxProcessPriority.High, Display = "High (Caution)" }
+        };
+
+        public static readonly LabeledEnumChoice<RobloxAffinityMode>[] RobloxAffinityModeChoices =
+        {
+            new() { Value = RobloxAffinityMode.Auto, Display = "Auto (CPU model based)" },
+            new() { Value = RobloxAffinityMode.AllCores, Display = "All cores" },
+            new() { Value = RobloxAffinityMode.Percent75, Display = "75% of logical cores" },
+            new() { Value = RobloxAffinityMode.Percent50, Display = "50% of logical cores" }
         };
 
         public IEnumerable<string> Profiles => PerformanceProfileManager.Presets.Select(x => x.Name);
@@ -145,6 +166,104 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set => App.Settings.Prop.PerformanceAutoCleanTempLogs = value;
         }
 
+        public string CpuModel => RobloxRuntimeOptimizer.GetCpuModel();
+
+        public int SuggestedAffinityCoreCount => RobloxRuntimeOptimizer.SuggestAutoCoreCount();
+
+        public int LogicalCoreCount => Environment.ProcessorCount;
+
+        public RobloxProcessPriority RobloxProcessPriority
+        {
+            get => App.Settings.Prop.RobloxProcessPriority;
+            set => App.Settings.Prop.RobloxProcessPriority = value;
+        }
+
+        public RobloxAffinityMode RobloxAffinityMode
+        {
+            get => App.Settings.Prop.RobloxAffinityMode;
+            set
+            {
+                if (App.Settings.Prop.RobloxAffinityMode == value)
+                    return;
+
+                App.Settings.Prop.RobloxAffinityMode = value;
+                OnPropertyChanged(nameof(RobloxAffinityMode));
+                OnPropertyChanged(nameof(TargetAffinityCoreCount));
+            }
+        }
+
+        public int TargetAffinityCoreCount => RobloxRuntimeOptimizer.GetTargetCoreCount(RobloxAffinityMode);
+
+        public bool AdvancedPreferD3D11
+        {
+            get => App.Settings.Prop.PerformanceAdvPreferD3D11;
+            set
+            {
+                if (App.Settings.Prop.PerformanceAdvPreferD3D11 == value)
+                    return;
+
+                App.Settings.Prop.PerformanceAdvPreferD3D11 = value;
+                ApplyAdvancedPerformanceFlags();
+                OnPropertyChanged(nameof(AdvancedPreferD3D11));
+            }
+        }
+
+        public bool AdvancedDisableGrass
+        {
+            get => App.Settings.Prop.PerformanceAdvDisableGrass;
+            set
+            {
+                if (App.Settings.Prop.PerformanceAdvDisableGrass == value)
+                    return;
+
+                App.Settings.Prop.PerformanceAdvDisableGrass = value;
+                ApplyAdvancedPerformanceFlags();
+                OnPropertyChanged(nameof(AdvancedDisableGrass));
+            }
+        }
+
+        public bool AdvancedPauseVoxelizer
+        {
+            get => App.Settings.Prop.PerformanceAdvPauseVoxelizer;
+            set
+            {
+                if (App.Settings.Prop.PerformanceAdvPauseVoxelizer == value)
+                    return;
+
+                App.Settings.Prop.PerformanceAdvPauseVoxelizer = value;
+                ApplyAdvancedPerformanceFlags();
+                OnPropertyChanged(nameof(AdvancedPauseVoxelizer));
+            }
+        }
+
+        public bool AdvancedLowTextureQuality
+        {
+            get => App.Settings.Prop.PerformanceAdvLowTextureQuality;
+            set
+            {
+                if (App.Settings.Prop.PerformanceAdvLowTextureQuality == value)
+                    return;
+
+                App.Settings.Prop.PerformanceAdvLowTextureQuality = value;
+                ApplyAdvancedPerformanceFlags();
+                OnPropertyChanged(nameof(AdvancedLowTextureQuality));
+            }
+        }
+
+        private void ApplyAdvancedPerformanceFlags()
+        {
+            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11", AdvancedPreferD3D11 ? "True" : null);
+            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11FL10", AdvancedPreferD3D11 ? "True" : null);
+
+            App.FastFlags.SetValue("FIntFRMMaxGrassDistance", AdvancedDisableGrass ? "0" : null);
+            App.FastFlags.SetValue("FIntFRMMinGrassDistance", AdvancedDisableGrass ? "0" : null);
+
+            App.FastFlags.SetValue("DFFlagDebugPauseVoxelizer", AdvancedPauseVoxelizer ? "True" : null);
+
+            App.FastFlags.SetValue("DFFlagTextureQualityOverrideEnabled", AdvancedLowTextureQuality ? "True" : null);
+            App.FastFlags.SetValue("DFIntTextureQualityOverride", AdvancedLowTextureQuality ? "0" : null);
+        }
+
         private void Apply()
         {
             PerformanceProfileManager.ApplyPreset(SelectedProfile);
@@ -175,6 +294,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
             SelectedProfile = "Balanced";
             ManualOverride = false;
             FPSCap = null;
+            AdvancedPreferD3D11 = false;
+            AdvancedDisableGrass = false;
+            AdvancedPauseVoxelizer = false;
+            AdvancedLowTextureQuality = false;
             PerformanceProfileManager.ApplyPreset(SelectedProfile);
         }
     }

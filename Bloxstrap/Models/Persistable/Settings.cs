@@ -51,5 +51,15 @@ namespace Bloxstrap.Models.Persistable
         public bool PerformanceCleanerCache { get; set; } = false;
         public bool PerformanceCleanerLogs { get; set; } = false;
         public bool PerformanceCleanerAppLogs { get; set; } = false;
+
+        // advanced Roblox-specific performance toggles
+        public bool PerformanceAdvPreferD3D11 { get; set; } = false;
+        public bool PerformanceAdvDisableGrass { get; set; } = false;
+        public bool PerformanceAdvPauseVoxelizer { get; set; } = false;
+        public bool PerformanceAdvLowTextureQuality { get; set; } = false;
+
+        // Roblox runtime process tuning
+        public RobloxProcessPriority RobloxProcessPriority { get; set; } = RobloxProcessPriority.AboveNormal;
+        public RobloxAffinityMode RobloxAffinityMode { get; set; } = RobloxAffinityMode.Auto;
     }
 }

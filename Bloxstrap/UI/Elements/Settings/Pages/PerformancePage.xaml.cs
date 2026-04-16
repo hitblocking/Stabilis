@@ -60,6 +60,69 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             var advTitle = new TextBlock { Text = "Advanced Settings", FontWeight = FontWeights.SemiBold, Foreground = Brushes.White };
             advPanel.Children.Add(advTitle);
 
+            var runtimeExpander = new Expander
+            {
+                Header = "Roblox runtime optimization",
+                IsExpanded = true,
+                Foreground = Brushes.White,
+                Background = Brushes.Transparent,
+                Margin = new Thickness(0, 12, 0, 0),
+                FontSize = 14,
+                FontWeight = FontWeights.SemiBold
+            };
+
+            var runtimeStack = new StackPanel { Orientation = Orientation.Vertical };
+
+            var cpuInfo = new TextBlock { Foreground = Brushes.LightGray, Margin = new Thickness(0, 0, 0, 8), TextWrapping = TextWrapping.Wrap };
+            cpuInfo.SetBinding(TextBlock.TextProperty, new Binding(nameof(PerformanceViewModel.CpuModel)) { StringFormat = "Detected CPU: {0}" });
+            runtimeStack.Children.Add(cpuInfo);
+
+            var priorityBorder = new Border { Background = PanelBlack, BorderBrush = HairlineBorder, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(12), Margin = new Thickness(0, 0, 0, 6) };
+            var priorityGrid = new Grid();
+            priorityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            priorityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var priorityTextPanel = new StackPanel { Orientation = Orientation.Vertical };
+            priorityTextPanel.Children.Add(new TextBlock { Text = "Roblox process priority", Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
+            priorityTextPanel.Children.Add(new TextBlock { Text = "Sets Windows process priority when Roblox starts.", Foreground = Brushes.LightGray, FontSize = 12 });
+            var priorityCombo = new ComboBox { Width = 240, Margin = new Thickness(12, 0, 0, 0), Foreground = Brushes.White };
+            StyleSettingsCombo(priorityCombo);
+            priorityCombo.ItemsSource = PerformanceViewModel.RobloxProcessPriorityChoices;
+            priorityCombo.DisplayMemberPath = nameof(LabeledEnumChoice<RobloxProcessPriority>.Display);
+            priorityCombo.SelectedValuePath = nameof(LabeledEnumChoice<RobloxProcessPriority>.Value);
+            priorityCombo.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(PerformanceViewModel.RobloxProcessPriority)) { Mode = BindingMode.TwoWay });
+            Grid.SetColumn(priorityTextPanel, 0);
+            Grid.SetColumn(priorityCombo, 1);
+            priorityGrid.Children.Add(priorityTextPanel);
+            priorityGrid.Children.Add(priorityCombo);
+            priorityBorder.Child = priorityGrid;
+            runtimeStack.Children.Add(priorityBorder);
+
+            var affinityBorder = new Border { Background = PanelBlack, BorderBrush = HairlineBorder, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(12), Margin = new Thickness(0, 0, 0, 6) };
+            var affinityGrid = new Grid();
+            affinityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            affinityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var affinityTextPanel = new StackPanel { Orientation = Orientation.Vertical };
+            affinityTextPanel.Children.Add(new TextBlock { Text = "CPU core usage", Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
+            affinityTextPanel.Children.Add(new TextBlock { Text = "Built-in affinity control (no external tools required).", Foreground = Brushes.LightGray, FontSize = 12 });
+            var affinityRecommended = new TextBlock { Foreground = Brushes.LightGray, FontSize = 12 };
+            affinityRecommended.SetBinding(TextBlock.TextProperty, new Binding(nameof(PerformanceViewModel.TargetAffinityCoreCount)) { StringFormat = "Will use {0} logical cores for Roblox." });
+            affinityTextPanel.Children.Add(affinityRecommended);
+            var affinityCombo = new ComboBox { Width = 240, Margin = new Thickness(12, 0, 0, 0), Foreground = Brushes.White };
+            StyleSettingsCombo(affinityCombo);
+            affinityCombo.ItemsSource = PerformanceViewModel.RobloxAffinityModeChoices;
+            affinityCombo.DisplayMemberPath = nameof(LabeledEnumChoice<RobloxAffinityMode>.Display);
+            affinityCombo.SelectedValuePath = nameof(LabeledEnumChoice<RobloxAffinityMode>.Value);
+            affinityCombo.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(PerformanceViewModel.RobloxAffinityMode)) { Mode = BindingMode.TwoWay });
+            Grid.SetColumn(affinityTextPanel, 0);
+            Grid.SetColumn(affinityCombo, 1);
+            affinityGrid.Children.Add(affinityTextPanel);
+            affinityGrid.Children.Add(affinityCombo);
+            affinityBorder.Child = affinityGrid;
+            runtimeStack.Children.Add(affinityBorder);
+
+            runtimeExpander.Content = runtimeStack;
+            advPanel.Children.Add(runtimeExpander);
+
             // Manual override checkbox
             var overridePanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0,8,0,0) };
             var manualCheckbox = new CheckBox { Content = "Manual FPS Override", Foreground = Brushes.White, VerticalAlignment = VerticalAlignment.Center };
@@ -202,6 +265,88 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             memoryCleanupStack.Children.Add(cleanerBorder);
             memoryCleanupExpander.Content = memoryCleanupStack;
             advPanel.Children.Add(memoryCleanupExpander);
+
+            var advancedPerformanceExpander = new Expander
+            {
+                Header = "Advanced Performance",
+                IsExpanded = false,
+                Foreground = Brushes.White,
+                Background = Brushes.Transparent,
+                Margin = new Thickness(0, 12, 0, 0),
+                FontSize = 14,
+                FontWeight = FontWeights.SemiBold
+            };
+
+            var advancedPerformanceStack = new StackPanel { Orientation = Orientation.Vertical };
+
+            StackPanel MakeAdvancedToggleRow(string title, string subtitle, string bindingPath)
+            {
+                var border = new Border
+                {
+                    Background = PanelBlack,
+                    BorderBrush = HairlineBorder,
+                    BorderThickness = new Thickness(1),
+                    CornerRadius = new CornerRadius(6),
+                    Padding = new Thickness(12),
+                    Margin = new Thickness(0, 6, 0, 6)
+                };
+
+                var row = new Grid();
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+                var textPanel = new StackPanel { Orientation = Orientation.Vertical };
+                textPanel.Children.Add(new TextBlock { Text = title, Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
+                textPanel.Children.Add(new TextBlock { Text = subtitle, Foreground = Brushes.LightGray, FontSize = 12, TextWrapping = TextWrapping.Wrap });
+
+                var toggle = new System.Windows.Controls.Primitives.ToggleButton { Width = 48, Height = 24, Margin = new Thickness(12, 0, 0, 0) };
+                toggle.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, new Binding(bindingPath) { Mode = BindingMode.TwoWay });
+
+                Grid.SetColumn(textPanel, 0);
+                Grid.SetColumn(toggle, 1);
+                row.Children.Add(textPanel);
+                row.Children.Add(toggle);
+                border.Child = row;
+
+                var wrapper = new StackPanel { Orientation = Orientation.Vertical };
+                wrapper.Children.Add(border);
+                return wrapper;
+            }
+
+            advancedPerformanceStack.Children.Add(
+                MakeAdvancedToggleRow(
+                    "Prefer Direct3D 11",
+                    "Forces Roblox to prefer D3D11, which can reduce frame-time spikes on some GPUs.",
+                    nameof(PerformanceViewModel.AdvancedPreferD3D11)
+                )
+            );
+
+            advancedPerformanceStack.Children.Add(
+                MakeAdvancedToggleRow(
+                    "Disable terrain grass rendering",
+                    "Removes dynamic grass rendering overhead to improve FPS stability.",
+                    nameof(PerformanceViewModel.AdvancedDisableGrass)
+                )
+            );
+
+            advancedPerformanceStack.Children.Add(
+                MakeAdvancedToggleRow(
+                    "Pause terrain voxelizer",
+                    "Reduces terrain update cost in-game; useful when frequent terrain updates cause stutter.",
+                    nameof(PerformanceViewModel.AdvancedPauseVoxelizer)
+                )
+            );
+
+            advancedPerformanceStack.Children.Add(
+                MakeAdvancedToggleRow(
+                    "Force low texture quality",
+                    "Uses lower texture quality to reduce VRAM pressure and frame pacing spikes.",
+                    nameof(PerformanceViewModel.AdvancedLowTextureQuality)
+                )
+            );
+
+            advancedPerformanceExpander.Content = advancedPerformanceStack;
+            advPanel.Children.Add(advancedPerformanceExpander);
 
             Grid.SetRow(advPanel, 3);
             grid.Children.Add(advPanel);

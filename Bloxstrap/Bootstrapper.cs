@@ -609,6 +609,9 @@ namespace Bloxstrap
             {
                 using var process = Process.Start(startInfo)!;
                 _appPid = process.Id;
+
+                if (_launchMode == LaunchMode.Player)
+                    RobloxRuntimeOptimizer.ApplyToProcess(_appPid);
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
             {
