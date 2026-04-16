@@ -22,35 +22,34 @@ namespace Bloxstrap.Extensions
         // i'm using multisize icon packs here with sizes 16, 24, 32, 48, 64 and 128
         // use this for generating multisize packs: https://www.aconvert.com/icon/
 
+        private static Icon? TryLoadCustomIcon()
+        {
+            const string LOG_IDENT = "BootstrapperIconEx::TryLoadCustomIcon";
+            string location = App.Settings.Prop.BootstrapperIconCustomLocation;
+
+            if (String.IsNullOrEmpty(location))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Warning: custom icon is not set.");
+                return null;
+            }
+
+            try
+            {
+                return new Icon(location);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to load custom icon!");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return null;
+            }
+        }
+
+        /// <summary>Full icon set (e.g. Appearance settings preview).</summary>
         public static Icon GetIcon(this BootstrapperIcon icon)
         {
-            const string LOG_IDENT = "BootstrapperIconEx::GetIcon";
-
-            // load the custom icon file
             if (icon == BootstrapperIcon.IconCustom)
-            {
-                Icon? customIcon = null;
-                string location = App.Settings.Prop.BootstrapperIconCustomLocation;
-
-                if (String.IsNullOrEmpty(location)) 
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Warning: custom icon is not set.");
-                }
-                else
-                {
-                    try
-                    {
-                        customIcon = new Icon(location);
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to load custom icon!");
-                        App.Logger.WriteException(LOG_IDENT, ex);
-                    }
-                }
-
-                return customIcon ?? Properties.Resources.IconBloxstrap;
-            }
+                return TryLoadCustomIcon() ?? Properties.Resources.IconBloxstrap;
 
             return icon switch
             {
@@ -65,6 +64,14 @@ namespace Bloxstrap.Extensions
                 BootstrapperIcon.IconBloxstrapClassic => Properties.Resources.IconBloxstrapClassic,
                 _ => Properties.Resources.IconBloxstrap
             };
+        }
+
+        /// <summary>Icon shown in bootstrapper/installer UI: white branded mark, or the user's custom file when selected.</summary>
+        public static Icon GetBootstrapperUiIcon(this BootstrapperIcon icon)
+        {
+            if (icon == BootstrapperIcon.IconCustom)
+                return TryLoadCustomIcon() ?? Properties.Resources.IconBloxstrap;
+            return Properties.Resources.IconBloxstrap;
         }
     }
 }

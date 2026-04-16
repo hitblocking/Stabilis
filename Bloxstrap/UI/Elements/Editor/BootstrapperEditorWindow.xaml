@@ -19,6 +19,7 @@
     Closing="OnClosing"
     ExtendsContentIntoTitleBar="True"
     WindowStartupLocation="CenterScreen"
+    Icon="pack://application:,,,/Bloxstrap.ico"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>

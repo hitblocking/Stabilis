@@ -1,0 +1,11 @@
+{
+  "Name": "SamplePerformance",
+  "Description": "A sample preset that lowers texture quality and disables scaling",
+  "FPSCap": 60,
+  "FastFlags": {
+    "Rendering.DisableScaling": "True",
+    "Rendering.TextureQuality.OverrideEnabled": "True",
+    "Rendering.TextureQuality.Level": "0",
+    "Rendering.MSAA": "1"
+  }
+}

@@ -449,7 +449,16 @@ namespace Bloxstrap.Resources {
                 return ResourceManager.GetString("Common.Close", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close this window.
+        /// </summary>
+        public static string Common_Close_Tooltip {
+            get {
+                return ResourceManager.GetString("Common.Close.Tooltip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Create New.
         /// </summary>
@@ -3429,6 +3438,15 @@ namespace Bloxstrap.Resources {
         public static string Menu_Save {
             get {
                 return ResourceManager.GetString("Menu.Save", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Save settings (Ctrl+S).
+        /// </summary>
+        public static string Menu_Save_Tooltip {
+            get {
+                return ResourceManager.GetString("Menu.Save.Tooltip", resourceCulture);
             }
         }
         

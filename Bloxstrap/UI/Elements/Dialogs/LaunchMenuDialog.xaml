@@ -8,8 +8,9 @@
         xmlns:base="clr-namespace:Bloxstrap.UI.Elements.Base"
         xmlns:models="clr-namespace:Bloxstrap.UI.ViewModels"
         xmlns:resources="clr-namespace:Bloxstrap.Resources"
+        xmlns:app="clr-namespace:Bloxstrap"
         mc:Ignorable="d"
-        Title="Bloxstrap"
+        Title="{x:Static app:App.ProjectName}"
         MinWidth="0"
         MinHeight="0"
         Width="580"
@@ -17,63 +18,65 @@
         ResizeMode="NoResize"
         Background="{ui:ThemeResource ApplicationBackgroundBrush}"
         ExtendsContentIntoTitleBar="True"
-        WindowStartupLocation="CenterScreen">
-    <Grid>
+        WindowBackdropType="None"
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/Bloxstrap.ico">
+    <Grid Background="{ui:ThemeResource ApplicationBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Grid.ColumnSpan="2" Padding="8" ShowMinimize="False" ShowMaximize="False" Title="Bloxstrap" Icon="pack://application:,,,/Bloxstrap.ico" CanMaximize="False" KeyboardNavigation.TabNavigation="None" />
+        <ui:TitleBar Grid.Row="0" Grid.ColumnSpan="2" Padding="8" ShowMinimize="False" ShowMaximize="False" Title="{x:Static app:App.ProjectName}" Icon="pack://application:,,,/Bloxstrap.ico" CanMaximize="False" KeyboardNavigation.TabNavigation="None" />
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="280" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0" VerticalAlignment="Center">
+            <Grid Grid.Column="0" VerticalAlignment="Center" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 
-                <Grid Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,32">
+                <Grid Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,32" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Image Grid.Column="0" Width="64" Height="64" Source="pack://application:,,,/Bloxstrap.ico" RenderOptions.BitmapScalingMode="HighQuality" />
+                    <Image Grid.Column="0" Width="64" Height="64" SnapsToDevicePixels="True" Source="pack://application:,,,/Resources/StabilisLogo.png" RenderOptions.BitmapScalingMode="HighQuality" />
                     <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="Bloxstrap" FontSize="24" />
+                        <TextBlock Text="{x:Static app:App.ProjectName}" FontSize="24" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                         <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Bottom" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                     </StackPanel>
                 </Grid>
 
-                <StackPanel Grid.Row="1" HorizontalAlignment="Center">
+                <StackPanel Grid.Row="1" HorizontalAlignment="Center" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
                     <ui:Hyperlink Icon="QuestionCircle48" Content="{x:Static resources:Strings.About_Title}" Command="{Binding LaunchAboutCommand, Mode=OneTime}" HorizontalAlignment="Center" />
                     <ui:Hyperlink Icon="Book24" Content="{x:Static resources:Strings.LaunchMenu_BloxstrapWiki}" NavigateUri="https://bloxstraplabs.com/wiki/" HorizontalAlignment="Center" />
                     <ui:Hyperlink Icon="PeopleCommunity28" Content="{x:Static resources:Strings.LaunchMenu_RobloxCommunity}" NavigateUri="https://www.roblox.com/communities/32380007/Bloxstrap" HorizontalAlignment="Center" />
                 </StackPanel>
             </Grid>
 
-            <StackPanel Grid.Column="1" Margin="16">
+            <StackPanel Grid.Column="1" Margin="16" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
                 <ui:CardAction Icon="ArrowRight12" TabIndex="0" Command="{Binding LaunchRobloxCommand, Mode=OneTime}">
                     <StackPanel>
-                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" />
+                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                     </StackPanel>
                 </ui:CardAction>
 
                 <ui:CardAction Margin="0,8,0,0" Icon="Wrench24" Command="{Binding LaunchRobloxStudioCommand, Mode=OneTime}">
                     <StackPanel>
-                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_LaunchRobloxStudio}" />
+                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_LaunchRobloxStudio}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                     </StackPanel>
                 </ui:CardAction>
 
                 <ui:CardAction Margin="0,8,0,0" TabIndex="1" Icon="Settings28" Command="{Binding LaunchSettingsCommand, Mode=OneTime}">
                     <StackPanel>
-                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_ConfigureSettings}" />
+                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_ConfigureSettings}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                     </StackPanel>
                 </ui:CardAction>
 
@@ -81,8 +84,8 @@
 
                 <ui:CardAction Margin="0,8,0,0" TabIndex="2" Icon="BookQuestionMark24" Command="models:GlobalViewModel.OpenWebpageCommand" CommandParameter="https://bloxstraplabs.com/wiki/help/">
                     <StackPanel>
-                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_Wiki_Title}" />
-                        <TextBlock Margin="0,2,0,0" FontSize="12" Text="{x:Static resources:Strings.LaunchMenu_Wiki_Description}" Padding="0,0,16,0"  Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.LaunchMenu_Wiki_Title}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12" Text="{x:Static resources:Strings.LaunchMenu_Wiki_Description}" Padding="0,0,16,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                     </StackPanel>
                 </ui:CardAction>
             </StackPanel>

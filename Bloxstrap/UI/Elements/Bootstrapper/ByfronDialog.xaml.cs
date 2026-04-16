@@ -108,7 +108,7 @@ namespace Bloxstrap.UI.Elements.Bootstrapper
             _viewModel = new ByfronDialogViewModel(this, version);
             DataContext = _viewModel;
             Title = App.Settings.Prop.BootstrapperTitle;
-            Icon = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
+            Icon = App.Settings.Prop.BootstrapperIcon.GetBootstrapperUiIcon().GetImageSource();
 
             if (App.Settings.Prop.Theme.GetFinal() == Theme.Light)
             {

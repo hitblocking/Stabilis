@@ -74,9 +74,9 @@ namespace Bloxstrap
         public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
 
         public string MutexName => $"{MutexNamePrefix}-{_launchMode}";
-        public string BackgroundUpdaterMutexName => $"Bloxstrap-BackgroundUpdater-{_launchMode}";
+        public string BackgroundUpdaterMutexName => $"{App.ProjectName}-BackgroundUpdater-{_launchMode}";
 
-        public string MutexNamePrefix { get; set; } = "Bloxstrap-Bootstrapper";
+        public string MutexNamePrefix { get; set; } = $"{App.ProjectName}-Bootstrapper";
         public bool QuitIfMutexExists { get; set; } = false;
         #endregion
 
@@ -765,12 +765,18 @@ namespace Bloxstrap
         private async Task<bool> CheckForUpdates()
         {
             const string LOG_IDENT = "Bootstrapper::CheckForUpdates";
+
+            if (!App.UseGithubReleaseAutoUpdate)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "GitHub release auto-update is disabled for this distribution");
+                return false;
+            }
             
             // don't update if there's another instance running (likely running in the background)
             // i don't like this, but there isn't much better way of doing it /shrug
             if (Process.GetProcessesByName(App.ProjectName).Length > 1)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"More than one Bloxstrap instance running, aborting update check");
+                App.Logger.WriteLine(LOG_IDENT, $"More than one {App.ProjectName} instance running, aborting update check");
                 return false;
             }
 
@@ -804,7 +810,7 @@ namespace Bloxstrap
             try
             {
 #if DEBUG_UPDATER
-                string downloadLocation = Path.Combine(Paths.TempUpdates, "Bloxstrap.exe");
+                string downloadLocation = Path.Combine(Paths.TempUpdates, $"{App.ProjectName}.exe");
 
                 Directory.CreateDirectory(Paths.TempUpdates);
 
@@ -1271,6 +1277,15 @@ namespace Bloxstrap
             List<string> modFolderFiles = new();
 
             Directory.CreateDirectory(Paths.Modifications);
+            // ensure performance profile is written to modifications so it is applied through existing launch flow
+            try
+            {
+                string perfFolder = Path.Combine(Paths.Modifications, "ClientSettings");
+                Directory.CreateDirectory(perfFolder);
+                var perfObj = new { Profile = App.Settings.Prop.SelectedPerformanceProfile, FPSCap = App.Settings.Prop.PerformanceFPSCap };
+                File.WriteAllText(Path.Combine(perfFolder, "PerformanceProfile.json"), JsonSerializer.Serialize(perfObj, new JsonSerializerOptions { WriteIndented = true }));
+            }
+            catch { }
 
             // check custom font mod
             // instead of replacing the fonts themselves, we'll just alter the font family manifests

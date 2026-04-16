@@ -10,7 +10,7 @@ namespace Bloxstrap.UI.ViewModels.Bootstrapper
 {
     public class FluentDialogViewModel : BootstrapperDialogViewModel
     {
-        public BackgroundType WindowBackdropType { get; set; } = BackgroundType.Mica;
+        public BackgroundType WindowBackdropType { get; set; } = BackgroundType.None;
 
         public SolidColorBrush BackgroundColourBrush { get; set; } = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
 
@@ -22,7 +22,7 @@ namespace Bloxstrap.UI.ViewModels.Bootstrapper
         {
             const int alpha = 128;
 
-            WindowBackdropType = aero ? BackgroundType.Aero : BackgroundType.Mica;
+            WindowBackdropType = aero ? BackgroundType.Aero : BackgroundType.None;
 
             if (aero)
             {

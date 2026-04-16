@@ -1,33 +1,33 @@
 {
   "profiles": {
-    "Bloxstrap (Launch)": {
+    "Stabilis (Launch)": {
       "commandName": "Project"
     },
-    "Bloxstrap (Quiet Launch)": {
+    "Stabilis (Quiet Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-quiet"
     },
-    "Bloxstrap (Uninstall)": {
+    "Stabilis (Uninstall)": {
       "commandName": "Project",
       "commandLineArgs": "-uninstall"
     },
-    "Bloxstrap (Quiet Uninstall)": {
+    "Stabilis (Quiet Uninstall)": {
       "commandName": "Project",
       "commandLineArgs": "-uninstall -quiet"
     },
-    "Bloxstrap (Menu)": {
+    "Stabilis (Menu)": {
       "commandName": "Project",
       "commandLineArgs": "-menu"
     },
-    "Bloxstrap (Deeplink)": {
+    "Stabilis (Deeplink)": {
       "commandName": "Project",
       "commandLineArgs": "-player \"roblox://experiences/start?placeId=13700835620\""
     },
-    "Bloxstrap (Studio Launch)": {
+    "Stabilis (Studio Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-studio"
     },
-    "Bloxstrap (Watcher)": {
+    "Stabilis (Watcher)": {
       "commandName": "Project",
       "commandLineArgs": "-watcher"
     }

@@ -18,7 +18,8 @@
         Height="420"
         Background="{ui:ThemeResource ApplicationBackgroundBrush}"
         ExtendsContentIntoTitleBar="True"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/Bloxstrap.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

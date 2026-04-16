@@ -118,7 +118,7 @@ namespace Bloxstrap.UI.Elements.Bootstrapper.Base
         public void SetupDialog()
         {
             Text = App.Settings.Prop.BootstrapperTitle;
-            Icon = App.Settings.Prop.BootstrapperIcon.GetIcon();
+            Icon = App.Settings.Prop.BootstrapperIcon.GetBootstrapperUiIcon();
 
             if (Locale.RightToLeft)
             {

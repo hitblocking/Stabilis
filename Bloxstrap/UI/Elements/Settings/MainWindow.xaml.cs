@@ -55,6 +55,9 @@ namespace Bloxstrap.UI.Elements.Settings
                 this.Left = _state.Left;
                 this.Top = _state.Top;
             }
+
+            if (_state.Maximized)
+                this.WindowState = System.Windows.WindowState.Maximized;
         }
 
         private async void ShowAlreadyRunningSnackbar()
@@ -88,12 +91,27 @@ namespace Bloxstrap.UI.Elements.Settings
                 if (result != MessageBoxResult.Yes)
                     e.Cancel = true;
             }
-            
-            _state.Width = this.Width;
-            _state.Height = this.Height;
 
-            _state.Top = this.Top;
-            _state.Left = this.Left;
+            if (e.Cancel)
+                return;
+
+            _state.Maximized = this.WindowState == System.Windows.WindowState.Maximized;
+
+            Rect bounds = this.WindowState == System.Windows.WindowState.Normal
+                ? new Rect(Left, Top, Width, Height)
+                : RestoreBounds;
+
+            if (bounds.Width > 0)
+            {
+                _state.Width = bounds.Width;
+                _state.Height = bounds.Height;
+            }
+
+            if (bounds.Left > 0 && bounds.Top > 0)
+            {
+                _state.Left = bounds.Left;
+                _state.Top = bounds.Top;
+            }
 
             App.State.Save();
         }

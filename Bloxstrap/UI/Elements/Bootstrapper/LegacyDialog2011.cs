@@ -42,7 +42,7 @@ namespace Bloxstrap.UI.Elements.Bootstrapper
         {
             InitializeComponent();
 
-            this.IconBox.BackgroundImage = App.Settings.Prop.BootstrapperIcon.GetIcon().ToBitmap();
+            this.IconBox.BackgroundImage = App.Settings.Prop.BootstrapperIcon.GetBootstrapperUiIcon().ToBitmap();
             this.buttonCancel.Text = Strings.Common_Cancel;
 
             ScaleWindow();

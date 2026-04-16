@@ -51,7 +51,17 @@
 
                     _prop = settings;
                     Loaded = true;
-                    LastFileHash = MD5Hash.FromString(contents);
+
+                    bool normalized = _prop is Models.Persistable.Settings st && TryNormalizeLegacyBootstrapperTitle(st);
+                    if (normalized)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Normalized legacy BootstrapperTitle; saving.");
+                        Save();
+                    }
+                    else
+                    {
+                        LastFileHash = MD5Hash.FromString(contents);
+                    }
 
                     App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
 
@@ -156,6 +166,18 @@
 
                 // should we notify?
             }
+        }
+
+        private static bool TryNormalizeLegacyBootstrapperTitle(Models.Persistable.Settings s)
+        {
+            if (string.Equals(s.BootstrapperTitle, "Bloxstrap", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(s.BootstrapperTitle, "Stabilist", StringComparison.OrdinalIgnoreCase))
+            {
+                s.BootstrapperTitle = App.ProjectName;
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

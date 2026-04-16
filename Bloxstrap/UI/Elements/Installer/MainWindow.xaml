@@ -15,9 +15,10 @@
         Height="540" Width="840" MinWidth="840"
         Background="{ui:ThemeResource ApplicationBackgroundBrush}"
         ExtendsContentIntoTitleBar="True"
-        WindowBackdropType="Mica"
-        WindowStartupLocation="CenterScreen">
-    <Grid>
+        WindowBackdropType="None"
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/Bloxstrap.ico">
+    <Grid Background="{ui:ThemeResource ApplicationBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -26,7 +27,7 @@
 
         <ui:TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" ForceShutdown="False" MinimizeToTray="False" UseSnapLayout="True" Title="{x:Static resources:Strings.Installer_Title}" Icon="pack://application:,,,/Bloxstrap.ico" />
 
-        <Grid x:Name="RootGrid" Grid.Row="1" Margin="12,12,0,0" Visibility="Visible">
+        <Grid x:Name="RootGrid" Grid.Row="1" Margin="12,12,0,0" Visibility="Visible" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -44,13 +45,13 @@
                 </ui:NavigationFluent.Items>
             </ui:NavigationFluent>
 
-            <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
+            <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <ui:Breadcrumb Grid.Row="0" Margin="0,0,0,5" Navigation="{Binding ElementName=RootNavigation}" />
-                <Frame x:Name="RootFrame" Grid.Row="1" />
+                <Frame x:Name="RootFrame" Grid.Row="1" Background="{ui:ThemeResource ApplicationBackgroundBrush}" NavigationUIVisibility="Hidden" />
             </Grid>
         </Grid>
 

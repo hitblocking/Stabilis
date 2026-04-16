@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Do not compile nested tool projects under tools\ (avoids CS0579 from their AssemblyInfo.cs). -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildProjectDirectory)\tools\**\*</DefaultItemExcludes>
+    <!-- SDK implicit usings pull in System.Windows.Forms with UseWindowsForms; clashes with WPF (Application, Message, …). -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>Stabilis</AssemblyName>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
@@ -16,6 +21,7 @@
     
   <ItemGroup>
     <Resource Include="Bloxstrap.ico" />
+    <Resource Include="Resources\StabilisLogo.png" />
     <Resource Include="Resources\Fonts\NotoSansThai-VariableFont_wdth,wght.ttf" />
     <Resource Include="Resources\Fonts\Rubik-VariableFont_wght.ttf" />
     <Resource Include="Resources\BootstrapperStyles\ByfronDialog\ByfronLogoDark.jpg" />

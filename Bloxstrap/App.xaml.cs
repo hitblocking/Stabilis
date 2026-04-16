@@ -14,15 +14,23 @@ namespace Bloxstrap
     public partial class App : Application
     {
 #if QA_BUILD
-        public const string ProjectName = "Bloxstrap-QA";
+        public const string ProjectName = "Stabilis-QA";
 #else
-        public const string ProjectName = "Bloxstrap";
+        public const string ProjectName = "Stabilis";
 #endif
-        public const string ProjectOwner = "Bloxstrap";
-        public const string ProjectRepository = "bloxstraplabs/bloxstrap";
-        public const string ProjectDownloadLink = "https://bloxstraplabs.com";
-        public const string ProjectHelpLink = "https://bloxstraplabs.com/wiki/help/";
-        public const string ProjectSupportLink = "https://github.com/bloxstraplabs/bloxstrap/issues/new";
+        public const string ProjectOwner = "hitblocking";
+        public const string ProjectRepository = "hitblocking/Stabilis";
+        public const string ProjectDownloadLink = "https://github.com/hitblocking/Stabilis/releases";
+        public const string ProjectHelpLink = "https://github.com/hitblocking/Stabilis/wiki";
+        public const string ProjectSupportLink = "https://github.com/hitblocking/Stabilis/issues/new";
+
+        /// <summary>
+        /// When true, the bootstrapper may download and run the GitHub release from <see cref="ProjectRepository"/>.
+        /// Leave this false while <see cref="ProjectRepository"/> still points at upstream Bloxstrap,
+        /// or launching Roblox could replace the app with stock Bloxstrap.
+        /// Not a <c>const</c> so the compiler does not treat the rest of <c>CheckForUpdates</c> as unreachable.
+        /// </summary>
+        public static readonly bool UseGithubReleaseAutoUpdate = false;
 
         public const string RobloxPlayerAppName = "RobloxPlayerBeta";
         public const string RobloxStudioAppName = "RobloxStudioBeta";
@@ -376,6 +384,14 @@ namespace Bloxstrap
                 Settings.Load();
                 State.Load();
                 FastFlags.Load();
+
+                // start memory trimmer if enabled
+                try
+                {
+                    if (Settings.Prop.MemoryTrimEnabled && Settings.Prop.MemoryTrimIntervalMinutes > 0)
+                        Maintenance.StartMemoryTrimmer(Settings.Prop.MemoryTrimIntervalMinutes);
+                }
+                catch { }
 
                 if (!Locale.SupportedLocales.ContainsKey(Settings.Prop.Locale))
                 {

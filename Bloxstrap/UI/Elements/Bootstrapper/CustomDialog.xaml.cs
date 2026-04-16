@@ -97,8 +97,7 @@ namespace Bloxstrap.UI.Elements.Bootstrapper
 
             _viewModel = new BootstrapperDialogViewModel(this);
             DataContext = _viewModel;
-            Title = App.Settings.Prop.BootstrapperTitle;
-            Icon = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
+            Icon = App.Settings.Prop.BootstrapperIcon.GetBootstrapperUiIcon().GetImageSource();
         }
 
         private void UiWindow_Closing(object sender, CancelEventArgs e)

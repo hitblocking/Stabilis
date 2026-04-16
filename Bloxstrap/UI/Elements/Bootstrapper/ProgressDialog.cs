@@ -54,7 +54,7 @@ namespace Bloxstrap.UI.Elements.Bootstrapper
 
             this.labelMessage.Text = Strings.Bootstrapper_StylePreview_TextCancel;
             this.buttonCancel.Text = Strings.Common_Cancel;
-            this.IconBox.BackgroundImage = App.Settings.Prop.BootstrapperIcon.GetIcon().GetSized(128, 128).ToBitmap();
+            this.IconBox.BackgroundImage = App.Settings.Prop.BootstrapperIcon.GetBootstrapperUiIcon().GetSized(128, 128).ToBitmap();
 
             SetupDialog();
 
