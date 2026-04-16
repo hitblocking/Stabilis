@@ -41,7 +41,7 @@ jobs:
       contents: write
 
     steps:
-      # When SIGNPATH_API_TOKEN is set, sign via SignPath; otherwise publish an unsigned build to the draft release.
+      # When SIGNPATH_API_TOKEN is set, sign via SignPath; otherwise attach an unsigned build to the release.
       - name: Sign and download artifact (SignPath)
         if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
         uses: signpath/github-action-submit-signing-request@v2.0
@@ -83,7 +83,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          draft: true
+          draft: false
           files: Stabilis-${{ github.ref_name }}.exe
           name: Stabilis ${{ github.ref_name }}
 
@@ -135,6 +135,6 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          draft: true
+          draft: false
           files: Stabilis-${{ github.ref_name }}.exe
           name: Stabilis ${{ github.ref_name }}
