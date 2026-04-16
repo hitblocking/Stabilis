@@ -51,8 +51,21 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: 'release'
 
+      # Publish outputs Stabilis.exe; SignPath may still be configured for Bloxstrap.exe — accept either.
       - name: Rename binaries
-        run: mv release/Stabilis.exe Stabilis-${{ github.ref_name }}.exe
+        shell: bash
+        run: |
+          set -euo pipefail
+          dest="Stabilis-${{ github.ref_name }}.exe"
+          if [[ -f release/Stabilis.exe ]]; then
+            mv release/Stabilis.exe "$dest"
+          elif [[ -f release/Bloxstrap.exe ]]; then
+            mv release/Bloxstrap.exe "$dest"
+          else
+            echo "::error::Signed executable not found (expected release/Stabilis.exe or release/Bloxstrap.exe)"
+            ls -la release/ || true
+            exit 1
+          fi
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -80,7 +93,19 @@ jobs:
           output-artifact-directory: 'release'
 
       - name: Rename binaries
-        run: mv release/Stabilis.exe Stabilis-${{ github.ref_name }}.exe
+        shell: bash
+        run: |
+          set -euo pipefail
+          dest="Stabilis-${{ github.ref_name }}.exe"
+          if [[ -f release/Stabilis.exe ]]; then
+            mv release/Stabilis.exe "$dest"
+          elif [[ -f release/Bloxstrap.exe ]]; then
+            mv release/Bloxstrap.exe "$dest"
+          else
+            echo "::error::Signed executable not found (expected release/Stabilis.exe or release/Bloxstrap.exe)"
+            ls -la release/ || true
+            exit 1
+          fi
 
       - name: Create release
         uses: softprops/action-gh-release@v2

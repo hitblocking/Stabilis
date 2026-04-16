@@ -86,3 +86,5 @@ Bloxstrap uses the [WPF UI](https://github.com/lepoco/wpfui) library for the use
 ## Code signing policy
 
 Thanks to [SignPath.io](https://signpath.io/) for providing a free code signing service, and the [SignPath Foundation](https://signpath.org/) for providing the free code signing certificate.
+
+**Maintainers (Stabilis):** The CI artifact configuration (`artifact-configuration-slug: github-ci` in `.github/workflows/ci-release.yml`) must include the published single-file binary. The build now produces **`Stabilis.exe`**. In the [SignPath](https://signpath.io/) project, update the **GitHub CI** artifact definition so the file to sign is **`Stabilis.exe`** (not `Bloxstrap.exe`). The release workflow still accepts a legacy **`Bloxstrap.exe`** output from SignPath if your policy has not been updated yet.
