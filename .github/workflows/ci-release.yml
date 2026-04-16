@@ -32,6 +32,7 @@ jobs:
       with:
         name: Stabilis (Release) (${{ github.sha }})
         path: .\Bloxstrap\bin\Release\net6.0-windows\win-x64\publish\*
+        overwrite: true
 
   release:
     needs: build
@@ -41,9 +42,11 @@ jobs:
       contents: write
 
     steps:
-      # When SIGNPATH_API_TOKEN is set, sign via SignPath; otherwise attach an unsigned build to the release.
+      # SignPath is best-effort: if it fails (or token is wrong), we still ship an unsigned exe from the build artifact.
       - name: Sign and download artifact (SignPath)
+        id: signpath
         if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
+        continue-on-error: true
         uses: signpath/github-action-submit-signing-request@v2.0
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -55,11 +58,11 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: 'release'
 
-      - name: Download build artifact (unsigned)
-        if: ${{ secrets.SIGNPATH_API_TOKEN == '' }}
+      # Always fetch the Windows publish output by name (reliable across runners). Prefer signed output in "release/" when SignPath succeeds.
+      - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          name: Stabilis (Release) (${{ github.sha }})
           path: artifact
 
       # Publish outputs Stabilis.exe; SignPath may still be configured for Bloxstrap.exe — accept either.
@@ -83,7 +86,9 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
+          generate_release_notes: true
           files: Stabilis-${{ github.ref_name }}.exe
           name: Stabilis ${{ github.ref_name }}
 
@@ -96,7 +101,9 @@ jobs:
 
     steps:
       - name: Sign and download artifact (SignPath)
+        id: signpath
         if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
+        continue-on-error: true
         uses: signpath/github-action-submit-signing-request@v2.0
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -108,11 +115,10 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: 'release'
 
-      - name: Download build artifact (unsigned)
-        if: ${{ secrets.SIGNPATH_API_TOKEN == '' }}
+      - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          name: Stabilis (Release) (${{ github.sha }})
           path: artifact
 
       - name: Prepare release binary
@@ -135,6 +141,8 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
+          generate_release_notes: true
           files: Stabilis-${{ github.ref_name }}.exe
           name: Stabilis ${{ github.ref_name }}
