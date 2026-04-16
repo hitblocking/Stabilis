@@ -96,13 +96,6 @@
                     </ui:CardAction>
                 </StackPanel>
 
-                <ui:Button Grid.Row="1"
-                           Margin="0,16,0,0"
-                           HorizontalAlignment="Stretch"
-                           Appearance="Primary"
-                           Icon="ArrowDownload24"
-                           Content="{Binding SaveAndInstallButtonText, Mode=OneTime}"
-                           Command="{Binding SaveAndInstallCommand, Mode=OneTime}" />
             </Grid>
         </Grid>
     </Grid>

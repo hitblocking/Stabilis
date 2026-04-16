@@ -10,8 +10,14 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand OpenAboutCommand => new RelayCommand(OpenAbout);
         
         public ICommand SaveSettingsCommand => new RelayCommand(SaveSettings);
+
+        public ICommand SaveAndLaunchCommand => new RelayCommand(SaveAndLaunch);
         
         public ICommand CloseWindowCommand => new RelayCommand(CloseWindow);
+
+        public string SaveAndLaunchButtonText => App.IsPlayerInstalled
+            ? Strings.LaunchMenu_SaveAndLaunchRoblox
+            : Strings.LaunchMenu_InstallAndSave;
 
         public EventHandler? RequestSaveNoticeEvent;
         
@@ -42,6 +48,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             LaunchHandler.SaveApplicationSettings();
             RequestSaveNoticeEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void SaveAndLaunch()
+        {
+            LaunchHandler.SaveApplicationSettings();
+            LaunchHandler.LaunchRoblox(LaunchMode.Player);
         }
     }
 }
