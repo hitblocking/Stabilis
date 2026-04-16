@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
+using Bloxstrap.Resources;
 using Bloxstrap.UI.ViewModels.Settings;
 using Color = System.Windows.Media.Color;
 
@@ -33,11 +34,13 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // advanced
 
-            var title = new TextBlock { Text = "Performance Profile", FontSize = 18, FontWeight = FontWeights.Bold, Foreground = Brushes.White };
-            Grid.SetRow(title, 0);
-            grid.Children.Add(title);
+            var header = new StackPanel { Orientation = Orientation.Vertical };
+            header.Children.Add(new TextBlock { Text = Strings.Menu_Performance_Title, FontSize = 22, FontWeight = FontWeights.SemiBold, Foreground = Brushes.White });
+            header.Children.Add(new TextBlock { Text = Strings.Menu_Performance_Lead, Margin = new Thickness(0, 6, 0, 0), FontSize = 14, Foreground = Brushes.LightGray, TextWrapping = TextWrapping.Wrap });
+            Grid.SetRow(header, 0);
+            grid.Children.Add(header);
 
-            var combo = new ComboBox { Width = 360, Margin = new Thickness(0, 8, 0, 0), Foreground = Brushes.White };
+            var combo = new ComboBox { Width = 360, Margin = new Thickness(0, 12, 0, 0), Foreground = Brushes.White };
             StyleSettingsCombo(combo);
             combo.SetBinding(ComboBox.ItemsSourceProperty, new Binding("Profiles"));
             combo.SetBinding(ComboBox.SelectedItemProperty, new Binding("SelectedProfile") { Mode = BindingMode.TwoWay });

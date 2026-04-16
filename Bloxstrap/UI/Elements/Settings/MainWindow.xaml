@@ -7,14 +7,15 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:base="clr-namespace:Bloxstrap.UI.Elements.Base"
              xmlns:resources="clr-namespace:Bloxstrap.Resources"
+             xmlns:app="clr-namespace:Bloxstrap"
              xmlns:dmodels="clr-namespace:Bloxstrap.UI.ViewModels.Settings"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dmodels:MainWindowViewModel, IsDesignTimeCreatable=True}"
              Title="{x:Static resources:Strings.Menu_Title}"
-             MinWidth="1000"
-             MinHeight="480"
-             Width="1000"
-             Height="580"
+             MinWidth="1020"
+             MinHeight="520"
+             Width="1080"
+             Height="640"
              Background="{ui:ThemeResource ApplicationBackgroundBrush}"
              ExtendsContentIntoTitleBar="True"
              WindowBackdropType="None"
@@ -46,7 +47,7 @@
 
         <ui:TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" ForceShutdown="False" MinimizeToTray="False" UseSnapLayout="True" Title="{x:Static resources:Strings.Menu_Title}" Icon="pack://application:,,,/Bloxstrap.ico" />
 
-        <Grid x:Name="RootGrid" Grid.Row="1" Margin="12,12,0,0" Visibility="Visible" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
+        <Grid x:Name="RootGrid" Grid.Row="1" Margin="0,8,0,0" Visibility="Visible" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -56,65 +57,60 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <ui:NavigationFluent x:Name="RootNavigation" Grid.Row="1" Grid.Column="0" Margin="0,0,12,0" Frame="{Binding ElementName=RootFrame}" SelectedPageIndex="0">
-                <ui:NavigationFluent.Items>
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" PageType="{x:Type pages:IntegrationsPage}" Icon="Add28" Tag="integrations" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" PageType="{x:Type pages:BehaviourPage}" Icon="PlaySettings20" Tag="bootstrapper" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Mods_Title}" PageType="{x:Type pages:ModsPage}" Icon="WrenchScrewdriver20" Tag="mods" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" PageType="{x:Type pages:FastFlagsPage}" Icon="Flag24" Tag="fastflags" />
-                    <ui:NavigationItem Content="Performance" PageType="{x:Type pages:PerformancePage}" Icon="TopSpeed20" Tag="performance" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" PageType="{x:Type pages:AppearancePage}" Icon="PaintBrush24" Tag="appearance" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Common_Shortcuts}" PageType="{x:Type pages:ShortcutsPage}" Icon="Apps28" Tag="shortcuts" />
+            <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="16,0,0,0" Padding="0,4,4,8" Background="#FF0A0A0A" CornerRadius="0,12,12,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}" BorderThickness="0,0,1,0">
+                <ui:NavigationFluent x:Name="RootNavigation" Frame="{Binding ElementName=RootFrame}" SelectedPageIndex="0" Margin="0">
+                    <ui:NavigationFluent.Items>
+                        <ui:NavigationHeader Margin="16,0,16,4" Text="{x:Static resources:Strings.Menu_NavSection_ClientLaunch}" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" PageType="{x:Type pages:BehaviourPage}" Icon="PlaySettings20" Tag="bootstrapper" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" PageType="{x:Type pages:IntegrationsPage}" Icon="Add28" Tag="integrations" />
 
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlagEditor_Title}" PageType="{x:Type pages:FastFlagEditorPage}" Icon="Flag24" Tag="fastflageditor" Visibility="Visible" />
-                </ui:NavigationFluent.Items>
-                <ui:NavigationFluent.Footer>
-                    <ui:NavigationItem Content="Stabilis" PageType="{x:Type pages:BloxstrapPage}" Icon="Settings24" Tag="shortcuts" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_About_Title}" Icon="QuestionCircle48" Margin="0,0,0,12" Command="{Binding OpenAboutCommand, Mode=OneTime}" />
-                </ui:NavigationFluent.Footer>
-            </ui:NavigationFluent>
+                        <ui:NavigationHeader Margin="16,8,16,4" Text="{x:Static resources:Strings.Menu_NavSection_Tuning}" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Performance_Title}" PageType="{x:Type pages:PerformancePage}" Icon="TopSpeed20" Tag="performance" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" PageType="{x:Type pages:FastFlagsPage}" Icon="Flag24" Tag="fastflags" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlagEditor_Title}" PageType="{x:Type pages:FastFlagEditorPage}" Icon="DocumentEdit24" Tag="fastflageditor" Visibility="Visible" />
 
-            <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
+                        <ui:NavigationHeader Margin="16,8,16,4" Text="{x:Static resources:Strings.Menu_NavSection_Customization}" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Mods_Title}" PageType="{x:Type pages:ModsPage}" Icon="WrenchScrewdriver20" Tag="mods" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" PageType="{x:Type pages:AppearancePage}" Icon="PaintBrush24" Tag="appearance" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Common_Shortcuts}" PageType="{x:Type pages:ShortcutsPage}" Icon="Apps28" Tag="shortcuts" />
+                    </ui:NavigationFluent.Items>
+                    <ui:NavigationFluent.Footer>
+                        <ui:NavigationSeparator Margin="0,8,0,4" />
+                        <ui:NavigationItem Content="{x:Static app:App.ProjectName}" PageType="{x:Type pages:BloxstrapPage}" Icon="Settings24" Tag="stabilis" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Menu_About_Title}" Icon="QuestionCircle48" Margin="0,0,0,12" Command="{Binding OpenAboutCommand, Mode=OneTime}" />
+                    </ui:NavigationFluent.Footer>
+                </ui:NavigationFluent>
+            </Border>
+
+            <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="16,0,20,0" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <ui:Breadcrumb Grid.Row="0" Margin="0,0,0,5" Navigation="{Binding ElementName=RootNavigation}" />
-                <Frame x:Name="RootFrame" Grid.Row="1" Background="{ui:ThemeResource ApplicationBackgroundBrush}" NavigationUIVisibility="Hidden" />
+                <ui:Breadcrumb Grid.Row="0" Margin="0,0,0,8" Navigation="{Binding ElementName=RootNavigation}" />
+                <Frame x:Name="RootFrame" Grid.Row="1" Background="Transparent" NavigationUIVisibility="Hidden" />
             </Grid>
         </Grid>
 
-        <StatusBar x:Name="RootStatusBar" Grid.Row="2" Padding="14,10" BorderThickness="0,1,0,0" Background="{ui:ThemeResource ApplicationBackgroundBrush}">
-            <StatusBar.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                    </Grid>
-                </ItemsPanelTemplate>
-            </StatusBar.ItemsPanel>
-            <StatusBarItem Grid.Column="0">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+        <Border x:Name="RootCommandBar" Grid.Row="2" Padding="16,12" BorderThickness="0,1,0,0" Background="{ui:ThemeResource ApplicationBackgroundBrush}" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <ui:ToggleSwitch IsChecked="{Binding TestModeEnabled, Mode=TwoWay}" />
                     <TextBlock Padding="12,0,0,0" Text="{x:Static resources:Strings.Menu_TestMode}" VerticalAlignment="Center" FontSize="14" />
                 </StackPanel>
-            </StatusBarItem>
-            <StatusBarItem Grid.Column="2" Padding="0,0,4,0">
-                <ui:Button Content="{Binding SaveAndLaunchButtonText, Mode=OneWay}" Appearance="Primary" Command="{Binding SaveAndLaunchCommand, Mode=OneWay}" />
-            </StatusBarItem>
-            <StatusBarItem Grid.Column="3" Padding="0,0,4,0">
-                <ui:Button Content="{x:Static resources:Strings.Menu_Save}" Appearance="Primary" Command="{Binding SaveSettingsCommand, Mode=OneWay}"
-                           ToolTip="{x:Static resources:Strings.Menu_Save_Tooltip}" />
-            </StatusBarItem>
-            <StatusBarItem Grid.Column="4" Padding="4,0,0,0">
-                <ui:Button Content="{x:Static resources:Strings.Common_Close}" Command="{Binding CloseWindowCommand, Mode=OneWay}"
-                           ToolTip="{x:Static resources:Strings.Common_Close_Tooltip}" />
-            </StatusBarItem>
-        </StatusBar>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <ui:Button MinWidth="140" Margin="0,0,8,0" Content="{Binding SaveAndLaunchButtonText, Mode=OneWay}" Appearance="Primary" Command="{Binding SaveAndLaunchCommand, Mode=OneWay}" />
+                    <ui:Button MinWidth="100" Margin="0,0,8,0" Content="{x:Static resources:Strings.Menu_Save}" Appearance="Secondary" Command="{Binding SaveSettingsCommand, Mode=OneWay}"
+                               ToolTip="{x:Static resources:Strings.Menu_Save_Tooltip}" />
+                    <ui:Button MinWidth="88" Content="{x:Static resources:Strings.Common_Close}" Appearance="Secondary" Command="{Binding CloseWindowCommand, Mode=OneWay}"
+                               ToolTip="{x:Static resources:Strings.Common_Close_Tooltip}" />
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </base:WpfUiWindow>

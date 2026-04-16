@@ -2166,7 +2166,25 @@ namespace Bloxstrap.Resources {
                 return ResourceManager.GetString("LaunchMenu.SaveAndLaunchRoblox", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Actions.
+        /// </summary>
+        public static string LaunchMenu_Section_Actions {
+            get {
+                return ResourceManager.GetString("LaunchMenu.Section.Actions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Links &amp; help.
+        /// </summary>
+        public static string LaunchMenu_Section_Links {
+            get {
+                return ResourceManager.GetString("LaunchMenu.Section.Links", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Having an issue?.
         /// </summary>
@@ -3485,7 +3503,52 @@ namespace Bloxstrap.Resources {
                 return ResourceManager.GetString("Menu.Mods.Title", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Client &amp; launch.
+        /// </summary>
+        public static string Menu_NavSection_ClientLaunch {
+            get {
+                return ResourceManager.GetString("Menu.NavSection.ClientLaunch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Look &amp; content.
+        /// </summary>
+        public static string Menu_NavSection_Customization {
+            get {
+                return ResourceManager.GetString("Menu.NavSection.Customization", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Performance &amp; tuning.
+        /// </summary>
+        public static string Menu_NavSection_Tuning {
+            get {
+                return ResourceManager.GetString("Menu.NavSection.Tuning", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Performance.
+        /// </summary>
+        public static string Menu_Performance_Title {
+            get {
+                return ResourceManager.GetString("Menu.Performance.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Presets, FPS limits, memory options, and runtime tuning for the Roblox client..
+        /// </summary>
+        public static string Menu_Performance_Lead {
+            get {
+                return ResourceManager.GetString("Menu.Performance.Lead", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Click for more information on this option..
         /// </summary>

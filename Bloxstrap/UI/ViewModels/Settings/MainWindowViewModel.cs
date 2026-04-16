@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Input;
 using Bloxstrap.UI.Elements.About;
 using CommunityToolkit.Mvvm.Input;

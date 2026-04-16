@@ -729,6 +729,21 @@ Selecting 'No' will ignore this warning and continue installation.</value>
   <data name="Menu.Mods.Title" xml:space="preserve">
     <value>Mods</value>
   </data>
+  <data name="Menu.NavSection.ClientLaunch" xml:space="preserve">
+    <value>Client &amp; launch</value>
+  </data>
+  <data name="Menu.NavSection.Customization" xml:space="preserve">
+    <value>Look &amp; content</value>
+  </data>
+  <data name="Menu.NavSection.Tuning" xml:space="preserve">
+    <value>Performance &amp; tuning</value>
+  </data>
+  <data name="Menu.Performance.Title" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="Menu.Performance.Lead" xml:space="preserve">
+    <value>Presets, FPS limits, memory options, and runtime tuning for the Roblox client.</value>
+  </data>
   <data name="Menu.MoreInfo" xml:space="preserve">
     <value>Click for more information on this option.</value>
   </data>
@@ -912,6 +927,12 @@ Stabilis was installed at "{1}".</value>
   </data>
   <data name="Uninstaller.Uninstall" xml:space="preserve">
     <value>Uninstall</value>
+  </data>
+  <data name="LaunchMenu.Section.Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="LaunchMenu.Section.Links" xml:space="preserve">
+    <value>Links &amp; help</value>
   </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Launch Roblox</value>
