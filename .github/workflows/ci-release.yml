@@ -37,9 +37,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
 
     steps:
-      - name: Sign and download artifact
+      # When SIGNPATH_API_TOKEN is set, sign via SignPath; otherwise publish an unsigned build to the draft release.
+      - name: Sign and download artifact (SignPath)
+        if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
         uses: signpath/github-action-submit-signing-request@v2.0
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -51,21 +55,30 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: 'release'
 
+      - name: Download build artifact (unsigned)
+        if: ${{ secrets.SIGNPATH_API_TOKEN == '' }}
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          path: artifact
+
       # Publish outputs Stabilis.exe; SignPath may still be configured for Bloxstrap.exe — accept either.
-      - name: Rename binaries
+      - name: Prepare release binary
         shell: bash
         run: |
           set -euo pipefail
           dest="Stabilis-${{ github.ref_name }}.exe"
-          if [[ -f release/Stabilis.exe ]]; then
-            mv release/Stabilis.exe "$dest"
-          elif [[ -f release/Bloxstrap.exe ]]; then
-            mv release/Bloxstrap.exe "$dest"
-          else
-            echo "::error::Signed executable not found (expected release/Stabilis.exe or release/Bloxstrap.exe)"
-            ls -la release/ || true
-            exit 1
+          if [[ -d release ]]; then
+            if [[ -f release/Stabilis.exe ]]; then mv release/Stabilis.exe "$dest"; exit 0; fi
+            if [[ -f release/Bloxstrap.exe ]]; then mv release/Bloxstrap.exe "$dest"; exit 0; fi
           fi
+          if [[ -d artifact ]]; then
+            exe="$(find artifact -type f \( -name Stabilis.exe -o -name Bloxstrap.exe \) | head -n1)"
+            if [[ -n "$exe" ]]; then mv "$exe" "$dest"; exit 0; fi
+          fi
+          echo "::error::No Stabilis.exe or Bloxstrap.exe found (signed output or downloaded artifact)"
+          ls -laR release artifact 2>/dev/null || true
+          exit 1
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -78,9 +91,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/release-test')
+    permissions:
+      contents: write
 
     steps:
-      - name: Sign and download artifact
+      - name: Sign and download artifact (SignPath)
+        if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
         uses: signpath/github-action-submit-signing-request@v2.0
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -92,20 +108,29 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: 'release'
 
-      - name: Rename binaries
+      - name: Download build artifact (unsigned)
+        if: ${{ secrets.SIGNPATH_API_TOKEN == '' }}
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          path: artifact
+
+      - name: Prepare release binary
         shell: bash
         run: |
           set -euo pipefail
           dest="Stabilis-${{ github.ref_name }}.exe"
-          if [[ -f release/Stabilis.exe ]]; then
-            mv release/Stabilis.exe "$dest"
-          elif [[ -f release/Bloxstrap.exe ]]; then
-            mv release/Bloxstrap.exe "$dest"
-          else
-            echo "::error::Signed executable not found (expected release/Stabilis.exe or release/Bloxstrap.exe)"
-            ls -la release/ || true
-            exit 1
+          if [[ -d release ]]; then
+            if [[ -f release/Stabilis.exe ]]; then mv release/Stabilis.exe "$dest"; exit 0; fi
+            if [[ -f release/Bloxstrap.exe ]]; then mv release/Bloxstrap.exe "$dest"; exit 0; fi
           fi
+          if [[ -d artifact ]]; then
+            exe="$(find artifact -type f \( -name Stabilis.exe -o -name Bloxstrap.exe \) | head -n1)"
+            if [[ -n "$exe" ]]; then mv "$exe" "$dest"; exit 0; fi
+          fi
+          echo "::error::No Stabilis.exe or Bloxstrap.exe found (signed output or downloaded artifact)"
+          ls -laR release artifact 2>/dev/null || true
+          exit 1
 
       - name: Create release
         uses: softprops/action-gh-release@v2
