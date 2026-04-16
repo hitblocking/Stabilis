@@ -37,23 +37,26 @@ namespace Bloxstrap.UI.Elements.Settings
 
         public void LoadState()
         {
-            if (_state.Left > SystemParameters.VirtualScreenWidth)
-                _state.Left = 0;
+            var virtualBounds = new Rect(
+                SystemParameters.VirtualScreenLeft,
+                SystemParameters.VirtualScreenTop,
+                SystemParameters.VirtualScreenWidth,
+                SystemParameters.VirtualScreenHeight
+            );
 
-            if (_state.Top > SystemParameters.VirtualScreenHeight)
-                _state.Top = 0;
-
-            if (_state.Width > 0)
-                this.Width = _state.Width;
-
-            if (_state.Height > 0)
-                this.Height = _state.Height;
-
-            if (_state.Left > 0 && _state.Top > 0)
+            bool validSize = _state.Width > MinWidth && _state.Height > MinHeight;
+            if (validSize)
             {
-                this.WindowStartupLocation = WindowStartupLocation.Manual;
-                this.Left = _state.Left;
-                this.Top = _state.Top;
+                Width = Math.Min(_state.Width, virtualBounds.Width);
+                Height = Math.Min(_state.Height, virtualBounds.Height);
+            }
+
+            var savedBounds = new Rect(_state.Left, _state.Top, Math.Max(_state.Width, MinWidth), Math.Max(_state.Height, MinHeight));
+            if (savedBounds.IntersectsWith(virtualBounds))
+            {
+                WindowStartupLocation = WindowStartupLocation.Manual;
+                Left = Math.Clamp(_state.Left, virtualBounds.Left, virtualBounds.Right - Width);
+                Top = Math.Clamp(_state.Top, virtualBounds.Top, virtualBounds.Bottom - Height);
             }
 
             if (_state.Maximized)
@@ -107,7 +110,7 @@ namespace Bloxstrap.UI.Elements.Settings
                 _state.Height = bounds.Height;
             }
 
-            if (bounds.Left > 0 && bounds.Top > 0)
+            if (!double.IsNaN(bounds.Left) && !double.IsNaN(bounds.Top) && !double.IsInfinity(bounds.Left) && !double.IsInfinity(bounds.Top))
             {
                 _state.Left = bounds.Left;
                 _state.Top = bounds.Top;

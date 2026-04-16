@@ -20,6 +20,9 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
     public class PerformanceViewModel : NotifyPropertyChangedViewModel
     {
+        private const string FpsCapFlag = "FIntTaskSchedulerTargetFps";
+        private const string FpsCapFlagLegacy = "DFIntTaskSchedulerTargetFps";
+
         public static readonly LabeledIntChoice[] CleanerRetentionChoices =
         {
             new() { Value = 0, Display = "Never" },
@@ -66,13 +69,27 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public int? FPSCap
         {
             get => App.Settings.Prop.PerformanceFPSCap;
-            set => App.Settings.Prop.PerformanceFPSCap = value;
+            set
+            {
+                if (App.Settings.Prop.PerformanceFPSCap == value)
+                    return;
+
+                App.Settings.Prop.PerformanceFPSCap = value;
+                ApplyFpsCapFlags();
+            }
         }
 
         public bool ManualOverride
         {
             get => App.Settings.Prop.PerformanceManualFPSOverride;
-            set => App.Settings.Prop.PerformanceManualFPSOverride = value;
+            set
+            {
+                if (App.Settings.Prop.PerformanceManualFPSOverride == value)
+                    return;
+
+                App.Settings.Prop.PerformanceManualFPSOverride = value;
+                ApplyFpsCapFlags();
+            }
         }
 
         public ICommand ApplyCommand => new RelayCommand(Apply);
@@ -264,9 +281,20 @@ namespace Bloxstrap.UI.ViewModels.Settings
             App.FastFlags.SetValue("DFIntTextureQualityOverride", AdvancedLowTextureQuality ? "0" : null);
         }
 
+        private void ApplyFpsCapFlags()
+        {
+            int? cap = App.Settings.Prop.PerformanceFPSCap;
+            bool useCap = App.Settings.Prop.PerformanceManualFPSOverride && cap.HasValue && cap.Value > 0;
+            string? value = useCap ? cap!.Value.ToString() : null;
+
+            App.FastFlags.SetValue(FpsCapFlag, value);
+            App.FastFlags.SetValue(FpsCapFlagLegacy, value);
+        }
+
         private void Apply()
         {
             PerformanceProfileManager.ApplyPreset(SelectedProfile);
+            ApplyFpsCapFlags();
 
             // persist fast flags and settings so the preset takes effect immediately
             try
@@ -299,6 +327,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             AdvancedPauseVoxelizer = false;
             AdvancedLowTextureQuality = false;
             PerformanceProfileManager.ApplyPreset(SelectedProfile);
+            ApplyFpsCapFlags();
         }
     }
 }
