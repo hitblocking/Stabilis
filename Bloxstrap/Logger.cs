@@ -1,4 +1,4 @@
-﻿namespace Bloxstrap
+namespace Bloxstrap
 {
     // https://stackoverflow.com/a/53873141/11852173
 
@@ -20,7 +20,8 @@
 
             string directory = useTempDir ? Path.Combine(Paths.TempLogs) : Path.Combine(Paths.Base, "Logs");
             string timestamp = DateTime.UtcNow.ToString("yyyyMMdd'T'HHmmss'Z'");
-            string filename = $"{App.ProjectName}_{timestamp}.log";
+            // Unique suffix avoids same-second launches (or stale files) failing init and triggering a silent exit in App.OnStartup.
+            string filename = $"{App.ProjectName}_{timestamp}_{Guid.NewGuid():N}.log";
             string location = Path.Combine(directory, filename);
 
             WriteLine(LOG_IDENT, $"Initializing at {location}");
@@ -33,19 +34,13 @@
 
             Directory.CreateDirectory(directory);
 
-            if (File.Exists(location))
-            {
-                WriteLine(LOG_IDENT, "Failed to initialize because log file already exists");
-                return;
-            }
-
             try
             {
-                _filestream = File.Open(location, FileMode.Create, FileAccess.Write, FileShare.Read);
+                _filestream = File.Open(location, FileMode.CreateNew, FileAccess.Write, FileShare.Read);
             }
-            catch (IOException)
+            catch (IOException ex)
             {
-                WriteLine(LOG_IDENT, "Failed to initialize because log file already exists");
+                WriteLine(LOG_IDENT, $"Failed to create log file ({ex.Message})");
                 return;
             }
             catch (UnauthorizedAccessException)

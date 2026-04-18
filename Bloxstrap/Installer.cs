@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using Microsoft.Win32;
 
 namespace Bloxstrap
@@ -360,12 +360,40 @@ namespace Bloxstrap
             App.SendStat("installAction", "uninstall");
         }
 
+        /// <summary>
+        /// True when the running exe lives under a typical SDK build folder (bin\Release or bin\Debug).
+        /// In that case we should not prompt to overwrite the installed copy in %LocalAppData% on every launch.
+        /// </summary>
+        private static bool IsLaunchedFromDotnetBuildOutput(string processPath)
+        {
+            try
+            {
+                string full = Path.GetFullPath(processPath)
+                    .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+                const StringComparison ord = StringComparison.OrdinalIgnoreCase;
+                char sep = Path.DirectorySeparatorChar;
+                return full.Contains($"{sep}bin{sep}Release{sep}", ord)
+                    || full.Contains($"{sep}bin{sep}Debug{sep}", ord);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static void HandleUpgrade()
         {
             const string LOG_IDENT = "Installer::HandleUpgrade";
 
             if (!File.Exists(Paths.Application) || Paths.Process == Paths.Application)
                 return;
+
+            if (IsLaunchedFromDotnetBuildOutput(Paths.Process))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Skipping upgrade prompt (launched from dotnet build output; installed copy unchanged)");
+                return;
+            }
 
             // 2.0.0 downloads updates to <BaseFolder>/Updates so lol
             bool isAutoUpgrade = App.LaunchSettings.UpgradeFlag.Active

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -743,6 +743,12 @@ Selecting 'No' will ignore this warning and continue installation.</value>
   </data>
   <data name="Menu.Performance.Lead" xml:space="preserve">
     <value>Presets, FPS limits, memory options, and runtime tuning for the Roblox client.</value>
+  </data>
+  <data name="Menu.WindowsTweak.Title" xml:space="preserve">
+    <value>Windows Tweaks</value>
+  </data>
+  <data name="Menu.WindowsTweak.Lead" xml:space="preserve">
+    <value>HKLM system tweaks for multimedia scheduling, TCP latency, and game task priority. Run Stabilis as Administrator to apply registry changes.</value>
   </data>
   <data name="Menu.MoreInfo" xml:space="preserve">
     <value>Click for more information on this option.</value>

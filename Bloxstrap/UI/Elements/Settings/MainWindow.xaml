@@ -66,6 +66,7 @@
 
                         <ui:NavigationHeader Margin="16,8,16,4" Text="{x:Static resources:Strings.Menu_NavSection_Tuning}" />
                         <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Performance_Title}" PageType="{x:Type pages:PerformancePage}" Icon="TopSpeed20" Tag="performance" />
+                        <ui:NavigationItem Content="{x:Static resources:Strings.Menu_WindowsTweak_Title}" PageType="{x:Type pages:WindowsTweakPage}" Icon="Desktop24" Tag="windowstweak" />
                         <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" PageType="{x:Type pages:FastFlagsPage}" Icon="Flag24" Tag="fastflags" />
                         <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlagEditor_Title}" PageType="{x:Type pages:FastFlagEditorPage}" Icon="DocumentEdit24" Tag="fastflageditor" Visibility="Visible" />
 

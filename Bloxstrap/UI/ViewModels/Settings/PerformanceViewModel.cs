@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using Bloxstrap;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Bloxstrap.UI.ViewModels.Settings
@@ -269,6 +270,139 @@ namespace Bloxstrap.UI.ViewModels.Settings
             }
         }
 
+        public bool RobloxXmlForcePerformanceStatsOff
+        {
+            get => App.Settings.Prop.RobloxXmlForcePerformanceStatsOff;
+            set
+            {
+                if (App.Settings.Prop.RobloxXmlForcePerformanceStatsOff == value)
+                    return;
+
+                App.Settings.Prop.RobloxXmlForcePerformanceStatsOff = value;
+                RobloxGlobalBasicSettings.ApplyInGameMenuSettings();
+                OnPropertyChanged(nameof(RobloxXmlForcePerformanceStatsOff));
+            }
+        }
+
+        public bool RobloxXmlGraphicsQualityAutomatic
+        {
+            get => App.Settings.Prop.RobloxXmlGraphicsQualityAutomatic;
+            set
+            {
+                if (App.Settings.Prop.RobloxXmlGraphicsQualityAutomatic == value)
+                    return;
+
+                App.Settings.Prop.RobloxXmlGraphicsQualityAutomatic = value;
+                RobloxGlobalBasicSettings.ApplyInGameMenuSettings();
+                OnPropertyChanged(nameof(RobloxXmlGraphicsQualityAutomatic));
+            }
+        }
+
+        public bool RobloxXmlDisableChatTranslation
+        {
+            get => App.Settings.Prop.RobloxXmlDisableChatTranslation;
+            set
+            {
+                if (App.Settings.Prop.RobloxXmlDisableChatTranslation == value)
+                    return;
+
+                App.Settings.Prop.RobloxXmlDisableChatTranslation = value;
+                RobloxGlobalBasicSettings.ApplyInGameMenuSettings();
+                OnPropertyChanged(nameof(RobloxXmlDisableChatTranslation));
+            }
+        }
+
+        public bool RobloxXmlSyncOnLaunchAndStartup
+        {
+            get => App.Settings.Prop.RobloxXmlSyncOnLaunchAndStartup;
+            set
+            {
+                if (App.Settings.Prop.RobloxXmlSyncOnLaunchAndStartup == value)
+                    return;
+
+                App.Settings.Prop.RobloxXmlSyncOnLaunchAndStartup = value;
+                OnPropertyChanged(nameof(RobloxXmlSyncOnLaunchAndStartup));
+            }
+        }
+
+        public bool PerformanceWinTweakMultimediaSystemProfile
+        {
+            get => App.Settings.Prop.PerformanceWinTweakMultimediaSystemProfile;
+            set
+            {
+                if (App.Settings.Prop.PerformanceWinTweakMultimediaSystemProfile == value)
+                    return;
+                App.Settings.Prop.PerformanceWinTweakMultimediaSystemProfile = value;
+                WindowsPerformanceTweaks.ApplyFromSettings();
+                OnPropertyChanged(nameof(PerformanceWinTweakMultimediaSystemProfile));
+            }
+        }
+
+        public bool PerformanceWinTweakTcpLatency
+        {
+            get => App.Settings.Prop.PerformanceWinTweakTcpLatency;
+            set
+            {
+                if (App.Settings.Prop.PerformanceWinTweakTcpLatency == value)
+                    return;
+                App.Settings.Prop.PerformanceWinTweakTcpLatency = value;
+                WindowsPerformanceTweaks.ApplyFromSettings();
+                OnPropertyChanged(nameof(PerformanceWinTweakTcpLatency));
+            }
+        }
+
+        public bool PerformanceWinTweakMmcssGames
+        {
+            get => App.Settings.Prop.PerformanceWinTweakMmcssGames;
+            set
+            {
+                if (App.Settings.Prop.PerformanceWinTweakMmcssGames == value)
+                    return;
+                App.Settings.Prop.PerformanceWinTweakMmcssGames = value;
+                WindowsPerformanceTweaks.ApplyFromSettings();
+                OnPropertyChanged(nameof(PerformanceWinTweakMmcssGames));
+            }
+        }
+
+        public bool PerformanceWinTweakGraphicsTdrDelay
+        {
+            get => App.Settings.Prop.PerformanceWinTweakGraphicsTdrDelay;
+            set
+            {
+                if (App.Settings.Prop.PerformanceWinTweakGraphicsTdrDelay == value)
+                    return;
+                App.Settings.Prop.PerformanceWinTweakGraphicsTdrDelay = value;
+                WindowsPerformanceTweaks.ApplyFromSettings();
+                OnPropertyChanged(nameof(PerformanceWinTweakGraphicsTdrDelay));
+            }
+        }
+
+        public bool PerformanceWinTweakNtfsNoLastAccess
+        {
+            get => App.Settings.Prop.PerformanceWinTweakNtfsNoLastAccess;
+            set
+            {
+                if (App.Settings.Prop.PerformanceWinTweakNtfsNoLastAccess == value)
+                    return;
+                App.Settings.Prop.PerformanceWinTweakNtfsNoLastAccess = value;
+                WindowsPerformanceTweaks.ApplyFromSettings();
+                OnPropertyChanged(nameof(PerformanceWinTweakNtfsNoLastAccess));
+            }
+        }
+
+        public bool PerformanceWinTweakWin32PriorityForeground
+        {
+            get => App.Settings.Prop.PerformanceWinTweakWin32PriorityForeground;
+            set
+            {
+                if (App.Settings.Prop.PerformanceWinTweakWin32PriorityForeground == value)
+                    return;
+                App.Settings.Prop.PerformanceWinTweakWin32PriorityForeground = value;
+                WindowsPerformanceTweaks.ApplyFromSettings();
+                OnPropertyChanged(nameof(PerformanceWinTweakWin32PriorityForeground));
+            }
+        }
+
         public bool AdvancedPreferD3D11
         {
             get => App.Settings.Prop.PerformanceAdvPreferD3D11;
@@ -320,63 +454,24 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     return;
 
                 App.Settings.Prop.PerformanceAdvLowTextureQuality = value;
-                ApplyAdvancedPerformanceFromSettings();
+                ApplyAdvancedPerformanceFlags();
                 OnPropertyChanged(nameof(AdvancedLowTextureQuality));
             }
         }
 
-        public bool AdvancedCapGraphicsQuality
+        private void ApplyAdvancedPerformanceFlags()
         {
-            get => App.Settings.Prop.PerformanceAdvCapGraphicsQuality;
-            set
-            {
-                if (App.Settings.Prop.PerformanceAdvCapGraphicsQuality == value)
-                    return;
+            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11", AdvancedPreferD3D11 ? "True" : null);
+            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11FL10", AdvancedPreferD3D11 ? "True" : null);
 
-                App.Settings.Prop.PerformanceAdvCapGraphicsQuality = value;
-                ApplyAdvancedPerformanceFromSettings();
-                OnPropertyChanged(nameof(AdvancedCapGraphicsQuality));
-            }
+            App.FastFlags.SetValue("FIntFRMMaxGrassDistance", AdvancedDisableGrass ? "0" : null);
+            App.FastFlags.SetValue("FIntFRMMinGrassDistance", AdvancedDisableGrass ? "0" : null);
+
+            App.FastFlags.SetValue("DFFlagDebugPauseVoxelizer", AdvancedPauseVoxelizer ? "True" : null);
+
+            App.FastFlags.SetValue("DFFlagTextureQualityOverrideEnabled", AdvancedLowTextureQuality ? "True" : null);
+            App.FastFlags.SetValue("DFIntTextureQualityOverride", AdvancedLowTextureQuality ? "0" : null);
         }
-
-        public bool AdvancedDisableMsaa
-        {
-            get => App.Settings.Prop.PerformanceAdvDisableMsaa;
-            set
-            {
-                if (App.Settings.Prop.PerformanceAdvDisableMsaa == value)
-                    return;
-
-                App.Settings.Prop.PerformanceAdvDisableMsaa = value;
-                ApplyAdvancedPerformanceFromSettings();
-                OnPropertyChanged(nameof(AdvancedDisableMsaa));
-            }
-        }
-
-        /// <summary>
-        /// Writes advanced graphics / client FastFlags from persisted settings. Call after presets and before <see cref="FastFlagManager.Save"/>.
-        /// </summary>
-        public static void ApplyAdvancedPerformanceFromSettings()
-        {
-            var s = App.Settings.Prop;
-
-            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11", s.PerformanceAdvPreferD3D11 ? "True" : null);
-            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11FL10", s.PerformanceAdvPreferD3D11 ? "True" : null);
-
-            App.FastFlags.SetValue("FIntFRMMaxGrassDistance", s.PerformanceAdvDisableGrass ? "0" : null);
-            App.FastFlags.SetValue("FIntFRMMinGrassDistance", s.PerformanceAdvDisableGrass ? "0" : null);
-
-            App.FastFlags.SetValue("DFFlagDebugPauseVoxelizer", s.PerformanceAdvPauseVoxelizer ? "True" : null);
-
-            App.FastFlags.SetValue("DFFlagTextureQualityOverrideEnabled", s.PerformanceAdvLowTextureQuality ? "True" : null);
-            App.FastFlags.SetValue("DFIntTextureQualityOverride", s.PerformanceAdvLowTextureQuality ? "0" : null);
-
-            // Mirrors lowering the in-game graphics quality slider (automatic quality tier cap).
-            App.FastFlags.SetValue("DFIntDebugFRMQualityLevelOverride", s.PerformanceAdvCapGraphicsQuality ? "1" : null);
-            App.FastFlags.SetValue("FIntDebugForceMSAASamples", s.PerformanceAdvDisableMsaa ? "0" : null);
-        }
-
-        private void ApplyAdvancedPerformanceFlags() => ApplyAdvancedPerformanceFromSettings();
 
         /// <summary>
         /// Writes task-scheduler FPS flags from <see cref="Models.Persistable.Settings"/> into the fast flag set.
@@ -399,7 +494,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             PerformanceProfileManager.ApplyPreset(SelectedProfile);
             ApplyFpsCapFlags();
-            ApplyAdvancedPerformanceFromSettings();
 
             // persist fast flags and settings so the preset takes effect immediately
             try
@@ -407,6 +501,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 App.FastFlags.Save();
                 App.Settings.Save();
                 RobloxRuntimeOptimizer.ApplyShellPreferencesFromSettings();
+                RobloxGlobalBasicSettings.ApplyInGameMenuSettings();
+                WindowsPerformanceTweaks.ApplyFromSettings();
             }
             catch { }
 
@@ -420,10 +516,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             // if manual override is set, ensure the chosen FPS is persisted in modifications
             if (ManualOverride)
-            {
                 PerformanceProfileManager.ApplyPreset(SelectedProfile); // ApplyPreset will respect manual override flag
-                ApplyAdvancedPerformanceFromSettings();
-            }
         }
 
         private void Reset()
@@ -435,11 +528,14 @@ namespace Bloxstrap.UI.ViewModels.Settings
             AdvancedDisableGrass = false;
             AdvancedPauseVoxelizer = false;
             AdvancedLowTextureQuality = false;
-            AdvancedCapGraphicsQuality = false;
-            AdvancedDisableMsaa = false;
+            PerformanceWinTweakMultimediaSystemProfile = false;
+            PerformanceWinTweakTcpLatency = false;
+            PerformanceWinTweakMmcssGames = false;
+            PerformanceWinTweakGraphicsTdrDelay = false;
+            PerformanceWinTweakNtfsNoLastAccess = false;
+            PerformanceWinTweakWin32PriorityForeground = false;
             PerformanceProfileManager.ApplyPreset(SelectedProfile);
             ApplyFpsCapFlags();
-            ApplyAdvancedPerformanceFromSettings();
         }
     }
 }

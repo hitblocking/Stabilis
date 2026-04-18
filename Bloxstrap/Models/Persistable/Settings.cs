@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 
 namespace Bloxstrap.Models.Persistable
@@ -57,10 +57,6 @@ namespace Bloxstrap.Models.Persistable
         public bool PerformanceAdvDisableGrass { get; set; } = false;
         public bool PerformanceAdvPauseVoxelizer { get; set; } = false;
         public bool PerformanceAdvLowTextureQuality { get; set; } = false;
-        /// <summary>Forces a low automatic graphics quality tier (in-game quality slider–like behavior).</summary>
-        public bool PerformanceAdvCapGraphicsQuality { get; set; } = false;
-        /// <summary>Disables MSAA (FIntDebugForceMSAASamples = 0).</summary>
-        public bool PerformanceAdvDisableMsaa { get; set; } = false;
 
         // Roblox runtime process tuning
         public RobloxProcessPriority RobloxProcessPriority { get; set; } = RobloxProcessPriority.AboveNormal;
@@ -73,5 +69,30 @@ namespace Bloxstrap.Models.Persistable
         public bool RobloxShellGpuHighPerformance { get; set; } = false;
         /// <summary>Windows: add compatibility layer to disable fullscreen optimizations for the Roblox executable.</summary>
         public bool RobloxShellDisableFullscreenOptimizations { get; set; } = false;
+
+        /// <summary>Writes PerformanceStatsVisible=false to GlobalBasicSettings XML (in-game Performance Stats).</summary>
+        public bool RobloxXmlForcePerformanceStatsOff { get; set; } = false;
+        /// <summary>Writes SavedQualityLevel=0 (Automatic) to GlobalBasicSettings XML (Graphics Mode / quality).</summary>
+        public bool RobloxXmlGraphicsQualityAutomatic { get; set; } = false;
+        /// <summary>Writes ChatTranslationEnabled=false to GlobalBasicSettings XML (Automatic Chat Translation).</summary>
+        public bool RobloxXmlDisableChatTranslation { get; set; } = false;
+        /// <summary>
+        /// When true, Stabilis also writes GlobalBasicSettings.xml on app startup and right before launching Roblox.
+        /// When false, that file is updated only from Performance (Escape menu section) and Save — avoids launcher touching the same file if you only want in-menu control.
+        /// </summary>
+        public bool RobloxXmlSyncOnLaunchAndStartup { get; set; } = true;
+
+        /// <summary>HKLM: Multimedia SystemProfile — disable network throttling + lower SystemResponsiveness for foreground work.</summary>
+        public bool PerformanceWinTweakMultimediaSystemProfile { get; set; } = false;
+        /// <summary>HKLM: Tcpip\Parameters — TcpAckFrequency/TCPNoDelay for lower TCP latency (system-wide).</summary>
+        public bool PerformanceWinTweakTcpLatency { get; set; } = false;
+        /// <summary>HKLM: MMCSS Tasks\Games — higher scheduling / SFIO priority for game-class workloads.</summary>
+        public bool PerformanceWinTweakMmcssGames { get; set; } = false;
+        /// <summary>HKLM GraphicsDrivers: longer TdrDelay before Windows resets the GPU driver (fewer spurious TDRs under heavy 3D load).</summary>
+        public bool PerformanceWinTweakGraphicsTdrDelay { get; set; } = false;
+        /// <summary>HKLM FileSystem: NtfsDisableLastAccessUpdate — skip updating file last-access time (less disk I/O during installs/updates).</summary>
+        public bool PerformanceWinTweakNtfsNoLastAccess { get; set; } = false;
+        /// <summary>HKLM PriorityControl: Win32PrioritySeparation — shorter variable quantum so foreground threads get CPU time sooner.</summary>
+        public bool PerformanceWinTweakWin32PriorityForeground { get; set; } = false;
     }
 }

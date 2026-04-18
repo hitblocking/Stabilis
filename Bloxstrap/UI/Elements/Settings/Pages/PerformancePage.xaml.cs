@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Data;
+using Bloxstrap.Enums;
 using Bloxstrap.Resources;
 using Bloxstrap.UI.Converters;
 using Bloxstrap.UI.ViewModels.Settings;
@@ -65,66 +66,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             var advTitle = new TextBlock { Text = "Advanced Settings", FontWeight = FontWeights.SemiBold, Foreground = Brushes.White };
             advPanel.Children.Add(advTitle);
 
-            var runtimeExpander = new Expander
-            {
-                Header = "Roblox runtime optimization",
-                IsExpanded = true,
-                Foreground = Brushes.White,
-                Background = Brushes.Transparent,
-                Margin = new Thickness(0, 12, 0, 0),
-                FontSize = 14,
-                FontWeight = FontWeights.SemiBold
-            };
-
-            var runtimeStack = new StackPanel { Orientation = Orientation.Vertical };
-
-            var cpuInfo = new TextBlock { Foreground = Brushes.LightGray, Margin = new Thickness(0, 0, 0, 8), TextWrapping = TextWrapping.Wrap };
-            cpuInfo.SetBinding(TextBlock.TextProperty, new Binding(nameof(PerformanceViewModel.CpuModel)) { StringFormat = "Detected CPU: {0}" });
-            runtimeStack.Children.Add(cpuInfo);
-
-            var priorityBorder = new Border { Background = PanelBlack, BorderBrush = HairlineBorder, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(12), Margin = new Thickness(0, 0, 0, 6) };
-            var priorityGrid = new Grid();
-            priorityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            priorityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            var priorityTextPanel = new StackPanel { Orientation = Orientation.Vertical };
-            priorityTextPanel.Children.Add(new TextBlock { Text = "Roblox process priority", Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
-            priorityTextPanel.Children.Add(new TextBlock { Text = "Sets Windows process priority when Roblox starts.", Foreground = Brushes.LightGray, FontSize = 12 });
-            var priorityCombo = new ComboBox { Width = 240, Margin = new Thickness(12, 0, 0, 0), Foreground = Brushes.White };
-            StyleSettingsCombo(priorityCombo);
-            priorityCombo.ItemsSource = PerformanceViewModel.RobloxProcessPriorityChoices;
-            priorityCombo.DisplayMemberPath = nameof(LabeledEnumChoice<RobloxProcessPriority>.Display);
-            priorityCombo.SelectedValuePath = nameof(LabeledEnumChoice<RobloxProcessPriority>.Value);
-            priorityCombo.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(PerformanceViewModel.RobloxProcessPriority)) { Mode = BindingMode.TwoWay });
-            Grid.SetColumn(priorityTextPanel, 0);
-            Grid.SetColumn(priorityCombo, 1);
-            priorityGrid.Children.Add(priorityTextPanel);
-            priorityGrid.Children.Add(priorityCombo);
-            priorityBorder.Child = priorityGrid;
-            runtimeStack.Children.Add(priorityBorder);
-
-            var affinityBorder = new Border { Background = PanelBlack, BorderBrush = HairlineBorder, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(12), Margin = new Thickness(0, 0, 0, 6) };
-            var affinityGrid = new Grid();
-            affinityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            affinityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            var affinityTextPanel = new StackPanel { Orientation = Orientation.Vertical };
-            affinityTextPanel.Children.Add(new TextBlock { Text = "CPU core usage", Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
-            affinityTextPanel.Children.Add(new TextBlock { Text = "Built-in affinity control (no external tools required).", Foreground = Brushes.LightGray, FontSize = 12 });
-            var affinityRecommended = new TextBlock { Foreground = Brushes.LightGray, FontSize = 12 };
-            affinityRecommended.SetBinding(TextBlock.TextProperty, new Binding(nameof(PerformanceViewModel.TargetAffinityCoreCount)) { StringFormat = "Will use {0} logical cores for Roblox." });
-            affinityTextPanel.Children.Add(affinityRecommended);
-            var affinityCombo = new ComboBox { Width = 240, Margin = new Thickness(12, 0, 0, 0), Foreground = Brushes.White };
-            StyleSettingsCombo(affinityCombo);
-            affinityCombo.ItemsSource = PerformanceViewModel.RobloxAffinityModeChoices;
-            affinityCombo.DisplayMemberPath = nameof(LabeledEnumChoice<RobloxAffinityMode>.Display);
-            affinityCombo.SelectedValuePath = nameof(LabeledEnumChoice<RobloxAffinityMode>.Value);
-            affinityCombo.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(PerformanceViewModel.RobloxAffinityMode)) { Mode = BindingMode.TwoWay });
-            Grid.SetColumn(affinityTextPanel, 0);
-            Grid.SetColumn(affinityCombo, 1);
-            affinityGrid.Children.Add(affinityTextPanel);
-            affinityGrid.Children.Add(affinityCombo);
-            affinityBorder.Child = affinityGrid;
-            runtimeStack.Children.Add(affinityBorder);
-
             Border MakeRuntimeToggleRow(string title, string subtitle, string bindingPath)
             {
                 var border = new Border
@@ -157,27 +98,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 return border;
             }
 
-            runtimeStack.Children.Add(MakeRuntimeToggleRow(
-                "Boost priority when Roblox has focus",
-                "Uses Windows PriorityBoost when the game window is focused. Does not use FastFlags.",
-                nameof(PerformanceViewModel.RobloxRuntimePriorityBoost)));
-            runtimeStack.Children.Add(MakeRuntimeToggleRow(
-                "Disable Windows power throttling (EcoQoS)",
-                "Turns off execution-speed throttling for the Roblox process. Does not use FastFlags.",
-                nameof(PerformanceViewModel.RobloxRuntimeDisablePowerThrottling)));
-            runtimeStack.Children.Add(MakeRuntimeToggleRow(
-                "Prefer high-performance GPU",
-                "Sets the per-app DirectX GPU preference (UserGpuPreferences). Useful on laptops with hybrid graphics.",
-                nameof(PerformanceViewModel.RobloxShellGpuHighPerformance)));
-            runtimeStack.Children.Add(MakeRuntimeToggleRow(
-                "Disable fullscreen optimizations",
-                "Adds the Windows compatibility layer flag for the Roblox executables. Can reduce latency in borderless/windowed setups.",
-                nameof(PerformanceViewModel.RobloxShellDisableFullscreenOptimizations)));
-
-            runtimeExpander.Content = runtimeStack;
-            advPanel.Children.Add(runtimeExpander);
-
-            // Manual override — label + ToggleSwitch (matches other performance rows)
+            // Manual FPS + cap (writes GlobalBasicSettings FramerateCap + FastFlags for launch compatibility)
             var overridePanel = new Grid { Margin = new Thickness(0, 8, 0, 0) };
             overridePanel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             overridePanel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -205,8 +126,144 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             fpsPanel.Children.Add(fpsBox);
             fpsPanel.Children.Add(suggested);
 
-            advPanel.Children.Add(overridePanel);
-            advPanel.Children.Add(fpsPanel);
+            var inGameExpander = new Expander
+            {
+                Header = "In-game Roblox settings (GlobalBasicSettings.xml)",
+                IsExpanded = true,
+                Foreground = Brushes.White,
+                Background = Brushes.Transparent,
+                Margin = new Thickness(0, 12, 0, 0),
+                FontSize = 14,
+                FontWeight = FontWeights.SemiBold
+            };
+            var inGameStack = new StackPanel { Orientation = Orientation.Vertical };
+            inGameStack.Children.Add(new TextBlock
+            {
+                Text = "These options mirror Escape → Settings (not FastFlags). Run Roblox once so the file exists; some keys appear after you open the in-game settings menu at least once.",
+                Foreground = Brushes.LightGray,
+                FontSize = 12,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 8)
+            });
+            overridePanel.Margin = new Thickness(0, 0, 0, 0);
+            inGameStack.Children.Add(overridePanel);
+            inGameStack.Children.Add(fpsPanel);
+            inGameStack.Children.Add(MakeRuntimeToggleRow(
+                "Sync this file when Stabilis starts and before Play",
+                "When off, Stabilis only writes GlobalBasicSettings when you change options here and use Apply or Save—so your last in-game Escape menu edits are not overwritten on launch.",
+                nameof(PerformanceViewModel.RobloxXmlSyncOnLaunchAndStartup)));
+            inGameStack.Children.Add(MakeRuntimeToggleRow(
+                "Turn off Performance Stats",
+                "Sets Performance Stats to Off in Roblox’s menu (saves overlay work).",
+                nameof(PerformanceViewModel.RobloxXmlForcePerformanceStatsOff)));
+            inGameStack.Children.Add(MakeRuntimeToggleRow(
+                "Graphics Mode: Automatic",
+                "Sets Graphics Mode to Automatic (SavedQualityLevel = 0) so Roblox scales quality to performance.",
+                nameof(PerformanceViewModel.RobloxXmlGraphicsQualityAutomatic)));
+            inGameStack.Children.Add(MakeRuntimeToggleRow(
+                "Disable automatic chat translation",
+                "Sets Automatic Chat Translation off (ChatTranslationEnabled = false).",
+                nameof(PerformanceViewModel.RobloxXmlDisableChatTranslation)));
+            inGameExpander.Content = inGameStack;
+            advPanel.Children.Add(inGameExpander);
+
+            var launchExpander = new Expander
+            {
+                Header = "When Stabilis launches Roblox (Windows)",
+                IsExpanded = true,
+                Foreground = Brushes.White,
+                Background = Brushes.Transparent,
+                Margin = new Thickness(0, 12, 0, 0),
+                FontSize = 14,
+                FontWeight = FontWeights.SemiBold
+            };
+            var launchStack = new StackPanel { Orientation = Orientation.Vertical };
+            launchStack.Children.Add(new TextBlock
+            {
+                Text = "Process priority and CPU affinity apply when Roblox starts from Stabilis. GPU preference and fullscreen optimizations are written when you save settings.",
+                Foreground = Brushes.LightGray,
+                FontSize = 12,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 8)
+            });
+            var cpuLine = new TextBlock
+            {
+                Foreground = Brushes.White,
+                FontSize = 12,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 4)
+            };
+            cpuLine.SetBinding(TextBlock.TextProperty, new Binding(nameof(PerformanceViewModel.CpuModel)));
+            launchStack.Children.Add(cpuLine);
+            var affinityLine = new TextBlock
+            {
+                Foreground = Brushes.LightGray,
+                FontSize = 11,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 8)
+            };
+            affinityLine.SetBinding(TextBlock.TextProperty, new Binding(nameof(PerformanceViewModel.TargetAffinityCoreCount)) { StringFormat = "Current affinity target: {0} logical cores (see mode below)." });
+            launchStack.Children.Add(affinityLine);
+
+            var priorityBorder = new Border { Background = PanelBlack, BorderBrush = HairlineBorder, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(12), Margin = new Thickness(0, 0, 0, 6) };
+            var priorityGrid = new Grid();
+            priorityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            priorityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var priorityText = new StackPanel { Orientation = Orientation.Vertical };
+            priorityText.Children.Add(new TextBlock { Text = "Process priority", Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
+            priorityText.Children.Add(new TextBlock { Text = "Applied to Roblox when launched from Stabilis.", Foreground = Brushes.LightGray, FontSize = 12 });
+            var priorityCombo = new ComboBox { Width = 220, Margin = new Thickness(12, 0, 0, 0), Foreground = Brushes.White };
+            StyleSettingsCombo(priorityCombo);
+            priorityCombo.ItemsSource = PerformanceViewModel.RobloxProcessPriorityChoices;
+            priorityCombo.DisplayMemberPath = nameof(LabeledEnumChoice<RobloxProcessPriority>.Display);
+            priorityCombo.SelectedValuePath = nameof(LabeledEnumChoice<RobloxProcessPriority>.Value);
+            priorityCombo.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(PerformanceViewModel.RobloxProcessPriority)) { Mode = BindingMode.TwoWay });
+            Grid.SetColumn(priorityText, 0);
+            Grid.SetColumn(priorityCombo, 1);
+            priorityGrid.Children.Add(priorityText);
+            priorityGrid.Children.Add(priorityCombo);
+            priorityBorder.Child = priorityGrid;
+            launchStack.Children.Add(priorityBorder);
+
+            var affinityBorder = new Border { Background = PanelBlack, BorderBrush = HairlineBorder, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(12), Margin = new Thickness(0, 0, 0, 6) };
+            var affinityGrid = new Grid();
+            affinityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            affinityGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var affinityText = new StackPanel { Orientation = Orientation.Vertical };
+            affinityText.Children.Add(new TextBlock { Text = "CPU affinity", Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
+            affinityText.Children.Add(new TextBlock { Text = "Limits how many logical cores Roblox may use.", Foreground = Brushes.LightGray, FontSize = 12 });
+            var affinityCombo = new ComboBox { Width = 260, Margin = new Thickness(12, 0, 0, 0), Foreground = Brushes.White };
+            StyleSettingsCombo(affinityCombo);
+            affinityCombo.ItemsSource = PerformanceViewModel.RobloxAffinityModeChoices;
+            affinityCombo.DisplayMemberPath = nameof(LabeledEnumChoice<RobloxAffinityMode>.Display);
+            affinityCombo.SelectedValuePath = nameof(LabeledEnumChoice<RobloxAffinityMode>.Value);
+            affinityCombo.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(PerformanceViewModel.RobloxAffinityMode)) { Mode = BindingMode.TwoWay });
+            Grid.SetColumn(affinityText, 0);
+            Grid.SetColumn(affinityCombo, 1);
+            affinityGrid.Children.Add(affinityText);
+            affinityGrid.Children.Add(affinityCombo);
+            affinityBorder.Child = affinityGrid;
+            launchStack.Children.Add(affinityBorder);
+
+            launchStack.Children.Add(MakeRuntimeToggleRow(
+                "Boost priority when Roblox has focus",
+                "Uses Windows PriorityBoost when the game window is focused. Does not use FastFlags.",
+                nameof(PerformanceViewModel.RobloxRuntimePriorityBoost)));
+            launchStack.Children.Add(MakeRuntimeToggleRow(
+                "Disable Windows power throttling (EcoQoS)",
+                "Turns off execution-speed throttling for the Roblox process. Does not use FastFlags.",
+                nameof(PerformanceViewModel.RobloxRuntimeDisablePowerThrottling)));
+            launchStack.Children.Add(MakeRuntimeToggleRow(
+                "Prefer high-performance GPU",
+                "Sets the per-app DirectX GPU preference (UserGpuPreferences). Useful on laptops with hybrid graphics.",
+                nameof(PerformanceViewModel.RobloxShellGpuHighPerformance)));
+            launchStack.Children.Add(MakeRuntimeToggleRow(
+                "Disable fullscreen optimizations",
+                "Adds the Windows compatibility layer flag for the Roblox executables. Can reduce latency in borderless/windowed setups.",
+                nameof(PerformanceViewModel.RobloxShellDisableFullscreenOptimizations)));
+
+            launchExpander.Content = launchStack;
+            advPanel.Children.Add(launchExpander);
 
             // Memory & cleanup: collapsible section + working dropdowns (stable ItemsSource, non-transparent combo chrome)
             var memoryCleanupExpander = new Expander
@@ -399,22 +456,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     "Force low texture quality",
                     "Uses lower texture quality to reduce VRAM pressure and frame pacing spikes.",
                     nameof(PerformanceViewModel.AdvancedLowTextureQuality)
-                )
-            );
-
-            advancedPerformanceStack.Children.Add(
-                MakeAdvancedToggleRow(
-                    "Cap automatic graphics quality (low)",
-                    "Sets client graphics tier override (DFIntDebugFRMQualityLevelOverride), similar to turning quality down in Roblox settings.",
-                    nameof(PerformanceViewModel.AdvancedCapGraphicsQuality)
-                )
-            );
-
-            advancedPerformanceStack.Children.Add(
-                MakeAdvancedToggleRow(
-                    "Disable anti-aliasing (MSAA)",
-                    "Sets FIntDebugForceMSAASamples to 0. Can improve FPS on GPU-bound PCs.",
-                    nameof(PerformanceViewModel.AdvancedDisableMsaa)
                 )
             );
 

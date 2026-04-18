@@ -23,15 +23,32 @@ jobs:
     - name: Build
       run: dotnet build -c Release --no-restore
 
+    # Self-contained single-file; IncludeAllContentForSelfExtract is in Bloxstrap.csproj so native WPF DLLs stay inside Stabilis.exe.
     - name: Publish
-      run: dotnet publish -p:PublishSingleFile=true -p:CommitHash=${{ github.sha }} -p:CommitRef=${{ github.ref_type }}/${{ github.ref_name }} -r win-x64 -c Release --self-contained false .\Bloxstrap\Bloxstrap.csproj
+      run: dotnet publish -p:PublishSingleFile=true -p:SelfContained=true -p:CommitHash=${{ github.sha }} -p:CommitRef=${{ github.ref_type }}/${{ github.ref_name }} -r win-x64 -c Release -p:DebugType=None -p:DebugSymbols=false .\Bloxstrap\Bloxstrap.csproj
 
+    # Loose publish output (for SignPath + release zip). Single-file publish is usually one exe; zip still documents “full” output and matches future non–single-file layouts.
     - name: Upload Artifact
       id: upload-artifact
       uses: actions/upload-artifact@v7
       with:
         name: Stabilis (Release) (${{ github.sha }})
         path: .\Bloxstrap\bin\Release\net6.0-windows\win-x64\publish\*
+        overwrite: true
+
+    - name: Zip publish folder
+      shell: pwsh
+      run: |
+        $pub = Join-Path $env:GITHUB_WORKSPACE 'Bloxstrap\bin\Release\net6.0-windows\win-x64\publish'
+        $zip = Join-Path $env:GITHUB_WORKSPACE 'Stabilis-win-x64.zip'
+        if (Test-Path $zip) { Remove-Item -Force $zip }
+        Compress-Archive -Path (Join-Path $pub '*') -DestinationPath $zip -CompressionLevel Optimal
+
+    - name: Upload full build (zip)
+      uses: actions/upload-artifact@v7
+      with:
+        name: Stabilis-win-x64 ${{ github.ref_name }} (${{ github.sha }})
+        path: Stabilis-win-x64.zip
         overwrite: true
 
   release:
@@ -65,23 +82,26 @@ jobs:
           name: Stabilis (Release) (${{ github.sha }})
           path: artifact
 
-      # Publish outputs Stabilis.exe; SignPath may still be configured for Bloxstrap.exe — accept either.
-      - name: Prepare release binary
+      # Prefer signed exe inside artifact/ before zipping so the zip matches the standalone .exe asset.
+      - name: Prepare release assets (exe + full zip)
         shell: bash
         run: |
           set -euo pipefail
-          dest="Stabilis-${{ github.ref_name }}.exe"
           if [[ -d release ]]; then
-            if [[ -f release/Stabilis.exe ]]; then mv release/Stabilis.exe "$dest"; exit 0; fi
-            if [[ -f release/Bloxstrap.exe ]]; then mv release/Bloxstrap.exe "$dest"; exit 0; fi
+            if [[ -f release/Stabilis.exe ]]; then cp -f release/Stabilis.exe artifact/Stabilis.exe; fi
+            if [[ -f release/Bloxstrap.exe ]]; then cp -f release/Bloxstrap.exe artifact/Bloxstrap.exe; fi
           fi
-          if [[ -d artifact ]]; then
-            exe="$(find artifact -type f \( -name Stabilis.exe -o -name Bloxstrap.exe \) | head -n1)"
-            if [[ -n "$exe" ]]; then mv "$exe" "$dest"; exit 0; fi
+          dest="Stabilis-${{ github.ref_name }}.exe"
+          exe="$(find artifact -type f \( -name Stabilis.exe -o -name Bloxstrap.exe \) | head -n1)"
+          if [[ -z "$exe" ]]; then
+            echo "::error::No Stabilis.exe or Bloxstrap.exe found (signed output or downloaded artifact)"
+            ls -laR release artifact 2>/dev/null || true
+            exit 1
           fi
-          echo "::error::No Stabilis.exe or Bloxstrap.exe found (signed output or downloaded artifact)"
-          ls -laR release artifact 2>/dev/null || true
-          exit 1
+          cp -f "$exe" "$dest"
+          zip_name="Stabilis-${{ github.ref_name }}-win-x64.zip"
+          rm -f "$zip_name"
+          (cd artifact && zip -r "../$zip_name" .)
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -89,7 +109,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
           generate_release_notes: true
-          files: Stabilis-${{ github.ref_name }}.exe
+          files: |
+            Stabilis-${{ github.ref_name }}.exe
+            Stabilis-${{ github.ref_name }}-win-x64.zip
           name: Stabilis ${{ github.ref_name }}
 
   release-test:
@@ -121,22 +143,25 @@ jobs:
           name: Stabilis (Release) (${{ github.sha }})
           path: artifact
 
-      - name: Prepare release binary
+      - name: Prepare release assets (exe + full zip)
         shell: bash
         run: |
           set -euo pipefail
-          dest="Stabilis-${{ github.ref_name }}.exe"
           if [[ -d release ]]; then
-            if [[ -f release/Stabilis.exe ]]; then mv release/Stabilis.exe "$dest"; exit 0; fi
-            if [[ -f release/Bloxstrap.exe ]]; then mv release/Bloxstrap.exe "$dest"; exit 0; fi
+            if [[ -f release/Stabilis.exe ]]; then cp -f release/Stabilis.exe artifact/Stabilis.exe; fi
+            if [[ -f release/Bloxstrap.exe ]]; then cp -f release/Bloxstrap.exe artifact/Bloxstrap.exe; fi
           fi
-          if [[ -d artifact ]]; then
-            exe="$(find artifact -type f \( -name Stabilis.exe -o -name Bloxstrap.exe \) | head -n1)"
-            if [[ -n "$exe" ]]; then mv "$exe" "$dest"; exit 0; fi
+          dest="Stabilis-${{ github.ref_name }}.exe"
+          exe="$(find artifact -type f \( -name Stabilis.exe -o -name Bloxstrap.exe \) | head -n1)"
+          if [[ -z "$exe" ]]; then
+            echo "::error::No Stabilis.exe or Bloxstrap.exe found (signed output or downloaded artifact)"
+            ls -laR release artifact 2>/dev/null || true
+            exit 1
           fi
-          echo "::error::No Stabilis.exe or Bloxstrap.exe found (signed output or downloaded artifact)"
-          ls -laR release artifact 2>/dev/null || true
-          exit 1
+          cp -f "$exe" "$dest"
+          zip_name="Stabilis-${{ github.ref_name }}-win-x64.zip"
+          rm -f "$zip_name"
+          (cd artifact && zip -r "../$zip_name" .)
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -144,5 +169,54 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
           generate_release_notes: true
-          files: Stabilis-${{ github.ref_name }}.exe
+          files: |
+            Stabilis-${{ github.ref_name }}.exe
+            Stabilis-${{ github.ref_name }}-win-x64.zip
           name: Stabilis ${{ github.ref_name }}
+
+  # Rolling prerelease on main: same assets as a tagged release (standalone exe + zip of publish folder).
+  main-snapshot:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download publish artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Stabilis (Release) (${{ github.sha }})
+          path: artifact
+
+      - name: Prepare assets and update continuous prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          (cd artifact && zip -r ../Stabilis-main-win-x64.zip .)
+          exe="$(find artifact -type f \( -name Stabilis.exe -o -name Bloxstrap.exe \) | head -n1)"
+          if [[ -z "$exe" ]]; then
+            echo "::error::No Stabilis.exe or Bloxstrap.exe in artifact"
+            ls -laR artifact
+            exit 1
+          fi
+          cp -f "$exe" Stabilis-main.exe
+          # Move lightweight tag so the prerelease points at this commit.
+          REPO="${{ github.repository }}"
+          SHA="${{ github.sha }}"
+          if gh api -X PATCH "repos/$REPO/git/refs/tags/continuous" -f sha="$SHA" -F force=true 2>/dev/null; then
+            :
+          else
+            gh api -X POST "repos/$REPO/git/git/refs" -f ref=refs/tags/continuous -f sha="$SHA"
+          fi
+          if gh release view continuous --repo "$REPO" &>/dev/null; then
+            gh release upload continuous Stabilis-main.exe Stabilis-main-win-x64.zip --repo "$REPO" --clobber
+          else
+            gh release create continuous \
+              --repo "$REPO" \
+              --title "Stabilis (main / continuous)" \
+              --notes "Automated build from [\`main\`](https://github.com/$REPO/tree/main) at [\`$SHA\`](https://github.com/$REPO/commit/$SHA)." \
+              --prerelease \
+              Stabilis-main.exe Stabilis-main-win-x64.zip
+          fi

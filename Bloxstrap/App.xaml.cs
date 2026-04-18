@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Shell;
@@ -433,9 +433,13 @@ namespace Bloxstrap
 
                 Logger.Initialize(LaunchSettings.UninstallFlag.Active);
 
+                // If the install Logs folder is not writable or creation races, fall back to %TEMP% instead of exiting with no UI.
+                if (!Logger.Initialized && !Logger.NoWriteMode)
+                    Logger.Initialize(true);
+
                 if (!Logger.Initialized && !Logger.NoWriteMode)
                 {
-                    Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
+                    Logger.WriteLine(LOG_IDENT, "Could not initialize file logging (duplicate launch or log folder unavailable), terminating.");
                     Terminate();
                 }
 
@@ -443,9 +447,9 @@ namespace Bloxstrap
                 State.Load();
                 FastFlags.Load();
                 PerformanceViewModel.ApplyTaskSchedulerFpsFromSettings();
-                PerformanceViewModel.ApplyAdvancedPerformanceFromSettings();
-                RobloxGlobalBasicSettings.ApplyFramerateCapFromSettings();
+                RobloxGlobalBasicSettings.ApplyInGameMenuSettingsFromLaunchPipelineIfEnabled();
                 RobloxRuntimeOptimizer.ApplyShellPreferencesFromSettings();
+                WindowsPerformanceTweaks.ApplyFromSettings();
 
                 // start memory trimmer if enabled
                 try
