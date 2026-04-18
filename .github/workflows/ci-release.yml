@@ -104,7 +104,7 @@ jobs:
           (cd artifact && zip -r "../$zip_name" .)
 
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
@@ -164,7 +164,7 @@ jobs:
           (cd artifact && zip -r "../$zip_name" .)
 
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
