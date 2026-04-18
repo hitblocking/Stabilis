@@ -77,7 +77,7 @@ jobs:
 
       # Always fetch the Windows publish output by name (reliable across runners). Prefer signed output in "release/" when SignPath succeeds.
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: Stabilis (Release) (${{ github.sha }})
           path: artifact
@@ -138,7 +138,7 @@ jobs:
           output-artifact-directory: 'release'
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: Stabilis (Release) (${{ github.sha }})
           path: artifact
@@ -183,7 +183,7 @@ jobs:
       contents: write
     steps:
       - name: Download publish artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: Stabilis (Release) (${{ github.sha }})
           path: artifact
