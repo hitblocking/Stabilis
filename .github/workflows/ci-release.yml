@@ -1,6 +1,10 @@
 name: CI (Release)
 on: [push, pull_request]
 
+# secrets cannot be referenced in step/job `if:`; map to env first (see GitHub Actions "Context availability").
+env:
+  HAS_SIGNPATH_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
+
 jobs:
   build:
     runs-on: windows-latest
@@ -62,7 +66,7 @@ jobs:
       # SignPath is best-effort: if it fails (or token is wrong), we still ship an unsigned exe from the build artifact.
       - name: Sign and download artifact (SignPath)
         id: signpath
-        if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
+        if: env.HAS_SIGNPATH_TOKEN == 'true'
         continue-on-error: true
         uses: signpath/github-action-submit-signing-request@v2.0
         with:
@@ -124,7 +128,7 @@ jobs:
     steps:
       - name: Sign and download artifact (SignPath)
         id: signpath
-        if: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
+        if: env.HAS_SIGNPATH_TOKEN == 'true'
         continue-on-error: true
         uses: signpath/github-action-submit-signing-request@v2.0
         with:
