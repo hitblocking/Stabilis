@@ -1,8 +1,10 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Data;
 using Bloxstrap.Resources;
+using Bloxstrap.UI.Converters;
 using Bloxstrap.UI.ViewModels.Settings;
 using Color = System.Windows.Media.Color;
 
@@ -123,20 +125,80 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             affinityBorder.Child = affinityGrid;
             runtimeStack.Children.Add(affinityBorder);
 
+            Border MakeRuntimeToggleRow(string title, string subtitle, string bindingPath)
+            {
+                var border = new Border
+                {
+                    Background = PanelBlack,
+                    BorderBrush = HairlineBorder,
+                    BorderThickness = new Thickness(1),
+                    CornerRadius = new CornerRadius(6),
+                    Padding = new Thickness(12),
+                    Margin = new Thickness(0, 6, 0, 6)
+                };
+
+                var row = new Grid { ClipToBounds = true };
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+                var textPanel = new StackPanel { Orientation = Orientation.Vertical };
+                textPanel.Children.Add(new TextBlock { Text = title, Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
+                textPanel.Children.Add(new TextBlock { Text = subtitle, Foreground = Brushes.LightGray, FontSize = 12, TextWrapping = TextWrapping.Wrap });
+
+                var sw = SettingsToggleSwitchFactory.Create();
+                sw.SetBinding(ToggleButton.IsCheckedProperty, new Binding(bindingPath) { Mode = BindingMode.TwoWay });
+
+                Grid.SetColumn(textPanel, 0);
+                Grid.SetColumn(sw, 1);
+                row.Children.Add(textPanel);
+                row.Children.Add(sw);
+                border.Child = row;
+
+                return border;
+            }
+
+            runtimeStack.Children.Add(MakeRuntimeToggleRow(
+                "Boost priority when Roblox has focus",
+                "Uses Windows PriorityBoost when the game window is focused. Does not use FastFlags.",
+                nameof(PerformanceViewModel.RobloxRuntimePriorityBoost)));
+            runtimeStack.Children.Add(MakeRuntimeToggleRow(
+                "Disable Windows power throttling (EcoQoS)",
+                "Turns off execution-speed throttling for the Roblox process. Does not use FastFlags.",
+                nameof(PerformanceViewModel.RobloxRuntimeDisablePowerThrottling)));
+            runtimeStack.Children.Add(MakeRuntimeToggleRow(
+                "Prefer high-performance GPU",
+                "Sets the per-app DirectX GPU preference (UserGpuPreferences). Useful on laptops with hybrid graphics.",
+                nameof(PerformanceViewModel.RobloxShellGpuHighPerformance)));
+            runtimeStack.Children.Add(MakeRuntimeToggleRow(
+                "Disable fullscreen optimizations",
+                "Adds the Windows compatibility layer flag for the Roblox executables. Can reduce latency in borderless/windowed setups.",
+                nameof(PerformanceViewModel.RobloxShellDisableFullscreenOptimizations)));
+
             runtimeExpander.Content = runtimeStack;
             advPanel.Children.Add(runtimeExpander);
 
-            // Manual override checkbox
-            var overridePanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0,8,0,0) };
-            var manualCheckbox = new CheckBox { Content = "Manual FPS Override", Foreground = Brushes.White, VerticalAlignment = VerticalAlignment.Center };
-            manualCheckbox.SetBinding(CheckBox.IsCheckedProperty, new Binding("ManualOverride") { Mode = BindingMode.TwoWay });
-            overridePanel.Children.Add(manualCheckbox);
+            // Manual override — label + ToggleSwitch (matches other performance rows)
+            var overridePanel = new Grid { Margin = new Thickness(0, 8, 0, 0) };
+            overridePanel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            overridePanel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var manualLabel = new TextBlock { Text = "Manual FPS Override", Foreground = Brushes.White, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.SemiBold };
+            var manualSw = SettingsToggleSwitchFactory.Create();
+            manualSw.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(PerformanceViewModel.ManualOverride)) { Mode = BindingMode.TwoWay });
+            Grid.SetColumn(manualLabel, 0);
+            Grid.SetColumn(manualSw, 1);
+            overridePanel.Children.Add(manualLabel);
+            overridePanel.Children.Add(manualSw);
 
             // FPS cap input
             var fpsPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0,8,0,0) };
             var fpsLabel = new TextBlock { Text = "FPS Cap:", VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.White };
             var fpsBox = new TextBox { Width = 80, Margin = new Thickness(8,0,0,0), Foreground = Brushes.White, Background = Brushes.Transparent };
-            fpsBox.SetBinding(TextBox.TextProperty, new Binding("FPSCap") { Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            fpsBox.SetBinding(TextBox.TextProperty, new Binding("FPSCap")
+            {
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                Converter = new NullableIntToStringConverter()
+            });
             var suggested = new TextBlock { Margin = new Thickness(12,0,0,0), VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.White };
             suggested.SetBinding(TextBlock.TextProperty, new Binding("SuggestedFPS") { StringFormat = "Suggested: {0} FPS" });
             fpsPanel.Children.Add(fpsLabel);
@@ -160,18 +222,18 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             var memoryCleanupStack = new StackPanel { Orientation = Orientation.Vertical };
 
             var memoryTrimBorder = new Border { Background = PanelBlack, BorderBrush = HairlineBorder, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(12), Margin = new Thickness(0, 0, 0, 6) };
-            var memoryTrimGrid = new Grid();
+            var memoryTrimGrid = new Grid { ClipToBounds = true };
             memoryTrimGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             memoryTrimGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             var memoryTextPanel = new StackPanel { Orientation = Orientation.Vertical };
             memoryTextPanel.Children.Add(new TextBlock { Text = "Memory trim", Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
             memoryTextPanel.Children.Add(new TextBlock { Text = "Periodically reclaim memory from the Roblox process while it runs.", Foreground = Brushes.LightGray, FontSize = 12, TextWrapping = TextWrapping.Wrap });
-            var memoryToggle = new System.Windows.Controls.Primitives.ToggleButton { Width = 48, Height = 24, Margin = new Thickness(12, 0, 0, 0) };
-            memoryToggle.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, new Binding("MemoryTrimEnabled") { Mode = BindingMode.TwoWay });
+            var memorySw = SettingsToggleSwitchFactory.Create();
+            memorySw.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(PerformanceViewModel.MemoryTrimEnabled)) { Mode = BindingMode.TwoWay });
             Grid.SetColumn(memoryTextPanel, 0);
-            Grid.SetColumn(memoryToggle, 1);
+            Grid.SetColumn(memorySw, 1);
             memoryTrimGrid.Children.Add(memoryTextPanel);
-            memoryTrimGrid.Children.Add(memoryToggle);
+            memoryTrimGrid.Children.Add(memorySw);
             memoryTrimBorder.Child = memoryTrimGrid;
             memoryCleanupStack.Children.Add(memoryTrimBorder);
 
@@ -232,11 +294,11 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             retentionBorder.Child = retentionGrid;
             cleanerStack.Children.Add(retentionBorder);
 
-            // Helper to create toggle rows
-            StackPanel MakeToggleRow(string title, string subtitle, string bindingPath)
+            // Helper to create cleaner option rows (ToggleSwitch — same as runtime / advanced)
+            Border MakeToggleRow(string title, string subtitle, string bindingPath)
             {
                 var b = new Border { Background = PanelBlack, BorderBrush = HairlineBorder, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(12), Margin = new Thickness(0,6,0,6) };
-                var g = new Grid();
+                var g = new Grid { ClipToBounds = true };
                 g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
@@ -244,20 +306,15 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 tp.Children.Add(new TextBlock { Text = title, Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
                 tp.Children.Add(new TextBlock { Text = subtitle, Foreground = Brushes.LightGray, FontSize = 12 });
 
-                var toggle = new System.Windows.Controls.Primitives.ToggleButton { Width = 48, Height = 24, Margin = new Thickness(12,0,0,0) };
-                // bind IsChecked
-                var bind = new Binding(bindingPath) { Mode = BindingMode.TwoWay };
-                toggle.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, bind);
+                var sw = SettingsToggleSwitchFactory.Create();
+                sw.SetBinding(ToggleButton.IsCheckedProperty, new Binding(bindingPath) { Mode = BindingMode.TwoWay });
 
                 Grid.SetColumn(tp, 0);
-                Grid.SetColumn(toggle, 1);
+                Grid.SetColumn(sw, 1);
                 g.Children.Add(tp);
-                g.Children.Add(toggle);
+                g.Children.Add(sw);
                 b.Child = g;
-
-                var wrapper = new StackPanel { Orientation = Orientation.Vertical };
-                wrapper.Children.Add(b);
-                return wrapper;
+                return b;
             }
 
             cleanerStack.Children.Add(MakeToggleRow("Cache", "Old downloads will be deleted.", "PerformanceCleanerCache"));
@@ -282,7 +339,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
             var advancedPerformanceStack = new StackPanel { Orientation = Orientation.Vertical };
 
-            StackPanel MakeAdvancedToggleRow(string title, string subtitle, string bindingPath)
+            Border MakeAdvancedToggleRow(string title, string subtitle, string bindingPath)
             {
                 var border = new Border
                 {
@@ -294,7 +351,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     Margin = new Thickness(0, 6, 0, 6)
                 };
 
-                var row = new Grid();
+                var row = new Grid { ClipToBounds = true };
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
@@ -302,18 +359,15 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 textPanel.Children.Add(new TextBlock { Text = title, Foreground = Brushes.White, FontWeight = FontWeights.SemiBold });
                 textPanel.Children.Add(new TextBlock { Text = subtitle, Foreground = Brushes.LightGray, FontSize = 12, TextWrapping = TextWrapping.Wrap });
 
-                var toggle = new System.Windows.Controls.Primitives.ToggleButton { Width = 48, Height = 24, Margin = new Thickness(12, 0, 0, 0) };
-                toggle.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, new Binding(bindingPath) { Mode = BindingMode.TwoWay });
+                var sw = SettingsToggleSwitchFactory.Create();
+                sw.SetBinding(ToggleButton.IsCheckedProperty, new Binding(bindingPath) { Mode = BindingMode.TwoWay });
 
                 Grid.SetColumn(textPanel, 0);
-                Grid.SetColumn(toggle, 1);
+                Grid.SetColumn(sw, 1);
                 row.Children.Add(textPanel);
-                row.Children.Add(toggle);
+                row.Children.Add(sw);
                 border.Child = row;
-
-                var wrapper = new StackPanel { Orientation = Orientation.Vertical };
-                wrapper.Children.Add(border);
-                return wrapper;
+                return border;
             }
 
             advancedPerformanceStack.Children.Add(
@@ -348,6 +402,22 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 )
             );
 
+            advancedPerformanceStack.Children.Add(
+                MakeAdvancedToggleRow(
+                    "Cap automatic graphics quality (low)",
+                    "Sets client graphics tier override (DFIntDebugFRMQualityLevelOverride), similar to turning quality down in Roblox settings.",
+                    nameof(PerformanceViewModel.AdvancedCapGraphicsQuality)
+                )
+            );
+
+            advancedPerformanceStack.Children.Add(
+                MakeAdvancedToggleRow(
+                    "Disable anti-aliasing (MSAA)",
+                    "Sets FIntDebugForceMSAASamples to 0. Can improve FPS on GPU-bound PCs.",
+                    nameof(PerformanceViewModel.AdvancedDisableMsaa)
+                )
+            );
+
             advancedPerformanceExpander.Content = advancedPerformanceStack;
             advPanel.Children.Add(advancedPerformanceExpander);
 
@@ -365,6 +435,21 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
             _viewModel = new PerformanceViewModel();
             this.DataContext = _viewModel;
+
+            this.Loaded += (_, _) => ApplyToggleSwitchThemeToVisualTree(this);
+        }
+
+        private static void ApplyToggleSwitchThemeToVisualTree(DependencyObject root)
+        {
+            int count = VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(root, i);
+                if (child is Wpf.Ui.Controls.ToggleSwitch sw)
+                    SettingsToggleSwitchFactory.ApplyTheme(sw);
+                ApplyToggleSwitchThemeToVisualTree(child);
+            }
         }
     }
 }
+

@@ -6,6 +6,8 @@ using System.Windows.Threading;
 
 using Microsoft.Win32;
 
+using Bloxstrap.UI.ViewModels.Settings;
+
 namespace Bloxstrap
 {
     /// <summary>
@@ -440,6 +442,10 @@ namespace Bloxstrap
                 Settings.Load();
                 State.Load();
                 FastFlags.Load();
+                PerformanceViewModel.ApplyTaskSchedulerFpsFromSettings();
+                PerformanceViewModel.ApplyAdvancedPerformanceFromSettings();
+                RobloxGlobalBasicSettings.ApplyFramerateCapFromSettings();
+                RobloxRuntimeOptimizer.ApplyShellPreferencesFromSettings();
 
                 // start memory trimmer if enabled
                 try

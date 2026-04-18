@@ -22,6 +22,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
     {
         private const string FpsCapFlag = "FIntTaskSchedulerTargetFps";
         private const string FpsCapFlagLegacy = "DFIntTaskSchedulerTargetFps";
+        /// <summary>
+        /// Lets Roblox honor <see cref="FpsCapFlagLegacy"/> via the in-game FPS control path (see community fast flag lists).
+        /// </summary>
+        private const string FpsCapEnableMenuFlag = "FFlagGameBasicSettingsFramerateCap";
 
         public static readonly LabeledIntChoice[] CleanerRetentionChoices =
         {
@@ -211,6 +215,60 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public int TargetAffinityCoreCount => RobloxRuntimeOptimizer.GetTargetCoreCount(RobloxAffinityMode);
 
+        public bool RobloxRuntimePriorityBoost
+        {
+            get => App.Settings.Prop.RobloxRuntimePriorityBoost;
+            set
+            {
+                if (App.Settings.Prop.RobloxRuntimePriorityBoost == value)
+                    return;
+
+                App.Settings.Prop.RobloxRuntimePriorityBoost = value;
+                OnPropertyChanged(nameof(RobloxRuntimePriorityBoost));
+            }
+        }
+
+        public bool RobloxRuntimeDisablePowerThrottling
+        {
+            get => App.Settings.Prop.RobloxRuntimeDisablePowerThrottling;
+            set
+            {
+                if (App.Settings.Prop.RobloxRuntimeDisablePowerThrottling == value)
+                    return;
+
+                App.Settings.Prop.RobloxRuntimeDisablePowerThrottling = value;
+                OnPropertyChanged(nameof(RobloxRuntimeDisablePowerThrottling));
+            }
+        }
+
+        public bool RobloxShellGpuHighPerformance
+        {
+            get => App.Settings.Prop.RobloxShellGpuHighPerformance;
+            set
+            {
+                if (App.Settings.Prop.RobloxShellGpuHighPerformance == value)
+                    return;
+
+                App.Settings.Prop.RobloxShellGpuHighPerformance = value;
+                RobloxRuntimeOptimizer.ApplyShellPreferencesFromSettings();
+                OnPropertyChanged(nameof(RobloxShellGpuHighPerformance));
+            }
+        }
+
+        public bool RobloxShellDisableFullscreenOptimizations
+        {
+            get => App.Settings.Prop.RobloxShellDisableFullscreenOptimizations;
+            set
+            {
+                if (App.Settings.Prop.RobloxShellDisableFullscreenOptimizations == value)
+                    return;
+
+                App.Settings.Prop.RobloxShellDisableFullscreenOptimizations = value;
+                RobloxRuntimeOptimizer.ApplyShellPreferencesFromSettings();
+                OnPropertyChanged(nameof(RobloxShellDisableFullscreenOptimizations));
+            }
+        }
+
         public bool AdvancedPreferD3D11
         {
             get => App.Settings.Prop.PerformanceAdvPreferD3D11;
@@ -262,26 +320,69 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     return;
 
                 App.Settings.Prop.PerformanceAdvLowTextureQuality = value;
-                ApplyAdvancedPerformanceFlags();
+                ApplyAdvancedPerformanceFromSettings();
                 OnPropertyChanged(nameof(AdvancedLowTextureQuality));
             }
         }
 
-        private void ApplyAdvancedPerformanceFlags()
+        public bool AdvancedCapGraphicsQuality
         {
-            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11", AdvancedPreferD3D11 ? "True" : null);
-            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11FL10", AdvancedPreferD3D11 ? "True" : null);
+            get => App.Settings.Prop.PerformanceAdvCapGraphicsQuality;
+            set
+            {
+                if (App.Settings.Prop.PerformanceAdvCapGraphicsQuality == value)
+                    return;
 
-            App.FastFlags.SetValue("FIntFRMMaxGrassDistance", AdvancedDisableGrass ? "0" : null);
-            App.FastFlags.SetValue("FIntFRMMinGrassDistance", AdvancedDisableGrass ? "0" : null);
-
-            App.FastFlags.SetValue("DFFlagDebugPauseVoxelizer", AdvancedPauseVoxelizer ? "True" : null);
-
-            App.FastFlags.SetValue("DFFlagTextureQualityOverrideEnabled", AdvancedLowTextureQuality ? "True" : null);
-            App.FastFlags.SetValue("DFIntTextureQualityOverride", AdvancedLowTextureQuality ? "0" : null);
+                App.Settings.Prop.PerformanceAdvCapGraphicsQuality = value;
+                ApplyAdvancedPerformanceFromSettings();
+                OnPropertyChanged(nameof(AdvancedCapGraphicsQuality));
+            }
         }
 
-        private void ApplyFpsCapFlags()
+        public bool AdvancedDisableMsaa
+        {
+            get => App.Settings.Prop.PerformanceAdvDisableMsaa;
+            set
+            {
+                if (App.Settings.Prop.PerformanceAdvDisableMsaa == value)
+                    return;
+
+                App.Settings.Prop.PerformanceAdvDisableMsaa = value;
+                ApplyAdvancedPerformanceFromSettings();
+                OnPropertyChanged(nameof(AdvancedDisableMsaa));
+            }
+        }
+
+        /// <summary>
+        /// Writes advanced graphics / client FastFlags from persisted settings. Call after presets and before <see cref="FastFlagManager.Save"/>.
+        /// </summary>
+        public static void ApplyAdvancedPerformanceFromSettings()
+        {
+            var s = App.Settings.Prop;
+
+            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11", s.PerformanceAdvPreferD3D11 ? "True" : null);
+            App.FastFlags.SetValue("FFlagDebugGraphicsPreferD3D11FL10", s.PerformanceAdvPreferD3D11 ? "True" : null);
+
+            App.FastFlags.SetValue("FIntFRMMaxGrassDistance", s.PerformanceAdvDisableGrass ? "0" : null);
+            App.FastFlags.SetValue("FIntFRMMinGrassDistance", s.PerformanceAdvDisableGrass ? "0" : null);
+
+            App.FastFlags.SetValue("DFFlagDebugPauseVoxelizer", s.PerformanceAdvPauseVoxelizer ? "True" : null);
+
+            App.FastFlags.SetValue("DFFlagTextureQualityOverrideEnabled", s.PerformanceAdvLowTextureQuality ? "True" : null);
+            App.FastFlags.SetValue("DFIntTextureQualityOverride", s.PerformanceAdvLowTextureQuality ? "0" : null);
+
+            // Mirrors lowering the in-game graphics quality slider (automatic quality tier cap).
+            App.FastFlags.SetValue("DFIntDebugFRMQualityLevelOverride", s.PerformanceAdvCapGraphicsQuality ? "1" : null);
+            App.FastFlags.SetValue("FIntDebugForceMSAASamples", s.PerformanceAdvDisableMsaa ? "0" : null);
+        }
+
+        private void ApplyAdvancedPerformanceFlags() => ApplyAdvancedPerformanceFromSettings();
+
+        /// <summary>
+        /// Writes task-scheduler FPS flags from <see cref="Models.Persistable.Settings"/> into the fast flag set.
+        /// Call before <see cref="FastFlagManager.Save"/> and before launching Roblox so ClientAppSettings.json matches settings even if the Performance page was never opened this session.
+        /// </summary>
+        public static void ApplyTaskSchedulerFpsFromSettings()
         {
             int? cap = App.Settings.Prop.PerformanceFPSCap;
             bool useCap = App.Settings.Prop.PerformanceManualFPSOverride && cap.HasValue && cap.Value > 0;
@@ -289,18 +390,23 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             App.FastFlags.SetValue(FpsCapFlag, value);
             App.FastFlags.SetValue(FpsCapFlagLegacy, value);
+            App.FastFlags.SetValue(FpsCapEnableMenuFlag, useCap ? "True" : null);
         }
+
+        private void ApplyFpsCapFlags() => ApplyTaskSchedulerFpsFromSettings();
 
         private void Apply()
         {
             PerformanceProfileManager.ApplyPreset(SelectedProfile);
             ApplyFpsCapFlags();
+            ApplyAdvancedPerformanceFromSettings();
 
             // persist fast flags and settings so the preset takes effect immediately
             try
             {
                 App.FastFlags.Save();
                 App.Settings.Save();
+                RobloxRuntimeOptimizer.ApplyShellPreferencesFromSettings();
             }
             catch { }
 
@@ -314,7 +420,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             // if manual override is set, ensure the chosen FPS is persisted in modifications
             if (ManualOverride)
+            {
                 PerformanceProfileManager.ApplyPreset(SelectedProfile); // ApplyPreset will respect manual override flag
+                ApplyAdvancedPerformanceFromSettings();
+            }
         }
 
         private void Reset()
@@ -326,8 +435,11 @@ namespace Bloxstrap.UI.ViewModels.Settings
             AdvancedDisableGrass = false;
             AdvancedPauseVoxelizer = false;
             AdvancedLowTextureQuality = false;
+            AdvancedCapGraphicsQuality = false;
+            AdvancedDisableMsaa = false;
             PerformanceProfileManager.ApplyPreset(SelectedProfile);
             ApplyFpsCapFlags();
+            ApplyAdvancedPerformanceFromSettings();
         }
     }
 }

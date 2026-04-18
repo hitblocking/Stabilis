@@ -4,6 +4,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 
 using Bloxstrap.UI.Elements.Dialogs;
+using Bloxstrap.UI.ViewModels.Settings;
 using Bloxstrap.Enums;
 
 namespace Bloxstrap
@@ -14,9 +15,14 @@ namespace Bloxstrap
         {
             const string LOG_IDENT = "LaunchHandler::SaveApplicationSettings";
 
+            PerformanceViewModel.ApplyTaskSchedulerFpsFromSettings();
+            PerformanceViewModel.ApplyAdvancedPerformanceFromSettings();
+
             App.Settings.Save();
             App.State.Save();
             App.FastFlags.Save();
+            RobloxGlobalBasicSettings.ApplyFramerateCapFromSettings();
+            RobloxRuntimeOptimizer.ApplyShellPreferencesFromSettings();
 
             foreach (var pair in App.PendingSettingTasks)
             {
@@ -265,6 +271,13 @@ namespace Bloxstrap
                     return;
                 }
             }
+
+            // Ensure FPS fast flags match persisted settings before modifications are applied (TextBox binding / no Performance page visit).
+            PerformanceViewModel.ApplyTaskSchedulerFpsFromSettings();
+            PerformanceViewModel.ApplyAdvancedPerformanceFromSettings();
+            App.FastFlags.Save();
+            RobloxGlobalBasicSettings.ApplyFramerateCapFromSettings();
+            RobloxRuntimeOptimizer.ApplyShellPreferencesFromSettings();
 
             // start bootstrapper and show the bootstrapper modal if we're not running silently
             App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper");

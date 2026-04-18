@@ -1,4 +1,4 @@
-﻿<ui:UiPage x:Class="Bloxstrap.UI.Elements.Settings.Pages.BloxstrapPage"
+<ui:UiPage x:Class="Bloxstrap.UI.Elements.Settings.Pages.BloxstrapPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -71,8 +71,22 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" Name="ShouldExportConfig" Content="{x:Static resources:Strings.Menu_Bloxstrap_ExportData_ExportConfig}" IsChecked="{Binding ShouldExportConfig}" />
-                <CheckBox Grid.Column="1" Name="ShouldExportLogs" Content="{x:Static resources:Strings.Menu_Bloxstrap_ExportData_ExportLogs}" IsChecked="{Binding ShouldExportLogs}" />
+                <Grid Grid.Column="0" Margin="0,0,8,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{x:Static resources:Strings.Menu_Bloxstrap_ExportData_ExportConfig}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0" />
+                    <ui:ToggleSwitch Grid.Column="1" x:Name="ShouldExportConfig" VerticalAlignment="Center" IsChecked="{Binding ShouldExportConfig, Mode=TwoWay}" />
+                </Grid>
+                <Grid Grid.Column="1" Margin="8,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{x:Static resources:Strings.Menu_Bloxstrap_ExportData_ExportLogs}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0" />
+                    <ui:ToggleSwitch Grid.Column="1" x:Name="ShouldExportLogs" VerticalAlignment="Center" IsChecked="{Binding ShouldExportLogs, Mode=TwoWay}" />
+                </Grid>
             </Grid>
         </ui:CardExpander>
 

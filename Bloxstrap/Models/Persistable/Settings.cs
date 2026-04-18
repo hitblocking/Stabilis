@@ -57,9 +57,21 @@ namespace Bloxstrap.Models.Persistable
         public bool PerformanceAdvDisableGrass { get; set; } = false;
         public bool PerformanceAdvPauseVoxelizer { get; set; } = false;
         public bool PerformanceAdvLowTextureQuality { get; set; } = false;
+        /// <summary>Forces a low automatic graphics quality tier (in-game quality slider–like behavior).</summary>
+        public bool PerformanceAdvCapGraphicsQuality { get; set; } = false;
+        /// <summary>Disables MSAA (FIntDebugForceMSAASamples = 0).</summary>
+        public bool PerformanceAdvDisableMsaa { get; set; } = false;
 
         // Roblox runtime process tuning
         public RobloxProcessPriority RobloxProcessPriority { get; set; } = RobloxProcessPriority.AboveNormal;
         public RobloxAffinityMode RobloxAffinityMode { get; set; } = RobloxAffinityMode.Auto;
+        /// <summary>Windows: allow temporary priority boost when the Roblox window has focus.</summary>
+        public bool RobloxRuntimePriorityBoost { get; set; } = true;
+        /// <summary>Windows: disable EcoQoS / execution-speed power throttling for the Roblox process (no FastFlags).</summary>
+        public bool RobloxRuntimeDisablePowerThrottling { get; set; } = true;
+        /// <summary>Windows: set per-exe GPU preference to high performance (DirectX UserGpuPreferences).</summary>
+        public bool RobloxShellGpuHighPerformance { get; set; } = false;
+        /// <summary>Windows: add compatibility layer to disable fullscreen optimizations for the Roblox executable.</summary>
+        public bool RobloxShellDisableFullscreenOptimizations { get; set; } = false;
     }
 }

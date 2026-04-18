@@ -1,4 +1,4 @@
-﻿// To debug the automatic updater:
+// To debug the automatic updater:
 // - Uncomment the definition below
 // - Publish the executable
 // - Launch the executable (click no when it asks you to upgrade)
@@ -560,6 +560,8 @@ namespace Bloxstrap
 
             SetStatus(Strings.Bootstrapper_Status_Starting);
 
+            RobloxRuntimeOptimizer.ApplyShellPreferencesForExecutable(AppData.ExecutablePath);
+
             var startInfo = new ProcessStartInfo()
             {
                 FileName = AppData.ExecutablePath,
@@ -578,7 +580,8 @@ namespace Bloxstrap
             if (shouldUncapWebView2)
             {
                 const string envKey = "WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS";
-                const string uncapArgs = "--disable-frame-rate-limit";
+                // Chromium / WebView2: help menu & shell UI break through 60 Hz when the task scheduler cap is raised.
+                const string uncapArgs = "--disable-frame-rate-limit --disable-gpu-vsync";
 
                 try
                 {
@@ -642,7 +645,7 @@ namespace Bloxstrap
                 using var process = Process.Start(startInfo)!;
                 _appPid = process.Id;
 
-                if (_launchMode == LaunchMode.Player)
+                if (_launchMode == LaunchMode.Player || _launchMode == LaunchMode.Studio)
                     RobloxRuntimeOptimizer.ApplyToProcess(_appPid);
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
