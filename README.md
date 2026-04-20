@@ -1,1 +1,1 @@
-A fork of Bloxstrap that only focuses on performance instead of visuals.
+A fork of Bloxstrap that purely focuses on performance instead of visuals.
