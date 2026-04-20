@@ -1,4 +1,4 @@
-A fork of Bloxstrap that purely focuses on performance instead of visuals.
+A fork of Bloxstrap that purely focuses on performance instead of visuals. Optimizes: Roblox, CPU, GPU, Internet, Trims Memory and clears Disk.
 
 <img width="1076" height="638" alt="image" src="https://github.com/user-attachments/assets/8d46f140-6f03-4703-bf50-91087d5e94a4" />
 
