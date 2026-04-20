@@ -3,9 +3,6 @@ A fork of Bloxstrap that purely focuses on performance instead of visuals.
 <img width="1076" height="638" alt="image" src="https://github.com/user-attachments/assets/8d46f140-6f03-4703-bf50-91087d5e94a4" />
 
 &ensp;
-<img width="1137" height="655" alt="image" src="https://github.com/user-attachments/assets/470c3024-cb9a-4906-b9c0-9d2150c1ea0c" />
-
-&ensp;
 <img width="1075" height="632" alt="image" src="https://github.com/user-attachments/assets/0b63454f-21ce-43a1-b87c-987d88edc506" />
 
 &ensp;
