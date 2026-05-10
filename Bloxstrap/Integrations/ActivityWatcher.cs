@@ -271,6 +271,9 @@
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"Joined Game ({Data})");
 
+                    if (App.LaunchSettings.ParsedLaunchPlaceId is long urlPlace && urlPlace == Data.PlaceId)
+                        App.Logger.WriteLine(LOG_IDENT, $"Join matches Roblox game URL place ID {urlPlace}");
+
                     InGame = true;
                     Data.TimeJoined = DateTime.Now;
 

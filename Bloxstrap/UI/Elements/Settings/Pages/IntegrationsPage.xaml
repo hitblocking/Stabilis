@@ -15,6 +15,29 @@
     <StackPanel Margin="0,0,14,14">
         <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_Description}" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
+        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_Region_Section}" FontSize="20" FontWeight="Medium" Margin="0,16,0,0" />
+        <controls:MarkdownTextBlock MarkdownText="{x:Static resources:Strings.Menu_Integrations_Region_Intro}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+        <controls:OptionControl 
+            Header="{x:Static resources:Strings.Menu_Integrations_Region_Preferred_Title}" 
+            Description="{x:Static resources:Strings.Menu_Integrations_Region_Preferred_Description}">
+            <ComboBox MinWidth="320" ItemsSource="{Binding RegionPreferenceOptions}" SelectedValue="{Binding PreferredRobloxRegion, Mode=TwoWay}" SelectedValuePath="Value" DisplayMemberPath="Label" />
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="{x:Static resources:Strings.Menu_Integrations_Region_ServerPicker_Title}" 
+            Description="{x:Static resources:Strings.Menu_Integrations_Region_ServerPicker_Description}"
+            IsEnabled="{Binding IsManualRegionPinned, Mode=OneWay}">
+            <ui:ToggleSwitch IsChecked="{Binding OfferLowPingServerPickerWhenRegionPinned, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="{x:Static resources:Strings.Menu_Integrations_Region_Toast_Title}" 
+            Description="{x:Static resources:Strings.Menu_Integrations_Region_Toast_Description}"
+            IsEnabled="{Binding IsRegionToastApplicable, Mode=OneWay}">
+            <ui:ToggleSwitch IsChecked="{Binding ShowRegionDetectionToastOnLaunch, Mode=TwoWay}" />
+        </controls:OptionControl>
+
         <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_ActivityTracking}" FontSize="20" FontWeight="Medium" Margin="0,16,0,0" />
 
         <controls:OptionControl 

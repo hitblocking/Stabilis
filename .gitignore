@@ -360,3 +360,9 @@ MigrationBackup/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Local publish / release artifacts (attach zip via GitHub Releases instead)
+publish-release/
+_publish_out/
+_publish_test/
+Stabilis-win-x64-Release.zip

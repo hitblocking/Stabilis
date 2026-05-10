@@ -1,4 +1,5 @@
 ﻿using Bloxstrap.Enums;
+using Bloxstrap.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,16 @@ namespace Bloxstrap
         public LaunchMode RobloxLaunchMode { get; set; } = LaunchMode.None;
 
         public string RobloxLaunchArgs { get; set; } = "";
+
+        /// <summary>
+        /// Place ID extracted from the launch URI or a Roblox web game URL passed on the command line, when present.
+        /// </summary>
+        public long? ParsedLaunchPlaceId { get; private set; }
+
+        /// <summary>
+        /// Region hint from <c>bloxstrapRegion=</c> or <c>region=</c> on the game URL / launch URI (per-launch override).
+        /// </summary>
+        public RobloxRegionPreference? ParsedLaunchRegionPreference { get; private set; }
 
         /// <summary>
         /// Original launch arguments
@@ -150,6 +161,30 @@ namespace Bloxstrap
                 ParsePlayer(PlayerFlag.Data);
             else if (StudioFlag.Active)
                 ParseStudio(StudioFlag.Data);
+
+            foreach (string arg in Args)
+            {
+                if (RobloxGameUrl.TryParsePlaceId(arg, out long placeFromArg))
+                {
+                    ParsedLaunchPlaceId = placeFromArg;
+                    break;
+                }
+            }
+
+            if (ParsedLaunchPlaceId is null && RobloxLaunchMode == LaunchMode.Player && !string.IsNullOrEmpty(RobloxLaunchArgs) && RobloxGameUrl.TryParsePlaceId(RobloxLaunchArgs, out long placeFromLaunch))
+                ParsedLaunchPlaceId = placeFromLaunch;
+
+            foreach (string arg in Args)
+            {
+                if (RobloxGameUrl.TryParseRegionPreference(arg, out RobloxRegionPreference regionFromArg))
+                {
+                    ParsedLaunchRegionPreference = regionFromArg;
+                    break;
+                }
+            }
+
+            if (ParsedLaunchRegionPreference is null && RobloxLaunchMode == LaunchMode.Player && !string.IsNullOrEmpty(RobloxLaunchArgs) && RobloxGameUrl.TryParseRegionPreference(RobloxLaunchArgs, out RobloxRegionPreference regionFromLaunch))
+                ParsedLaunchRegionPreference = regionFromLaunch;
         }
 
         private void ParsePlayer(string? data)

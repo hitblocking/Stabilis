@@ -81,9 +81,13 @@ namespace Bloxstrap.UI
                 _ => ""
             };
 
+            string serverRegion = string.IsNullOrEmpty(_activityWatcher.Data.ServerRegion)
+                ? Strings.Common_NotAvailable
+                : _activityWatcher.Data.ServerRegion;
+
             ShowAlert(
                 title,
-                String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation),
+                String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation, serverRegion),
                 10,
                 (_, _) => _menuContainer.ShowServerInformationWindow()
             );

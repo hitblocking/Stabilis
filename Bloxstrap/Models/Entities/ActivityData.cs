@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using Bloxstrap.AppData;
+using Bloxstrap;
 using Bloxstrap.Models.APIs;
 using CommunityToolkit.Mvvm.Input;
 
@@ -39,6 +40,11 @@ namespace Bloxstrap.Models.Entities
         public long UserId { get; set; } = 0;
 
         public string MachineAddress { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Subdivision + country from geo-IP when server location is queried (e.g. state/region code and ISO country).
+        /// </summary>
+        public string ServerRegion { get; set; } = string.Empty;
 
         public bool MachineAddressValid => !string.IsNullOrEmpty(MachineAddress) && !MachineAddress.StartsWith("10.");
 
@@ -106,8 +112,12 @@ namespace Bloxstrap.Models.Entities
 
             await serverQuerySemaphore.WaitAsync();
 
-            if (GlobalCache.ServerLocation.TryGetValue(MachineAddress, out string? location))
+            string? location = null;
+
+            if (GlobalCache.ServerGeoByIp.TryGetValue(MachineAddress, out ServerGeoCacheEntry cached))
             {
+                ServerRegion = cached.Region ?? "";
+                location = cached.Location;
                 serverQuerySemaphore.Release();
                 return location;
             }
@@ -119,20 +129,26 @@ namespace Bloxstrap.Models.Entities
                 if (string.IsNullOrEmpty(ipInfo.City))
                     throw new InvalidHTTPResponseException("Reported city was blank");
 
+                string regionLabel = $"{ipInfo.Region}, {ipInfo.Country}";
+                ServerRegion = regionLabel;
+
                 if (ipInfo.City == ipInfo.Region)
                     location = $"{ipInfo.Region}, {ipInfo.Country}";
                 else
                     location = $"{ipInfo.City}, {ipInfo.Region}, {ipInfo.Country}";
 
-                GlobalCache.ServerLocation[MachineAddress] = location;
+                GlobalCache.ServerGeoByIp[MachineAddress] = new ServerGeoCacheEntry(location, regionLabel);
                 serverQuerySemaphore.Release();
+
+                App.Logger.WriteLine(LOG_IDENT, $"Detected server region for {MachineAddress}: {regionLabel} (place {PlaceId})");
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Failed to get server location for {MachineAddress}");
                 App.Logger.WriteException(LOG_IDENT, ex);
 
-                GlobalCache.ServerLocation[MachineAddress] = location;
+                GlobalCache.ServerGeoByIp[MachineAddress] = new ServerGeoCacheEntry(location, null);
+                ServerRegion = "";
                 serverQuerySemaphore.Release();
 
                 /*Frontend.ShowConnectivityDialog(

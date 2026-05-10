@@ -5,8 +5,12 @@ using Microsoft.Win32;
 
 using CommunityToolkit.Mvvm.Input;
 
+using Bloxstrap.Enums;
+
 namespace Bloxstrap.UI.ViewModels.Settings
 {
+    public sealed record RegionPreferenceOption(RobloxRegionPreference Value, string Label);
+
     public class IntegrationsViewModel : NotifyPropertyChangedViewModel
     {
         public ICommand AddIntegrationCommand => new RelayCommand(AddIntegration);
@@ -133,5 +137,43 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public CustomIntegration? SelectedCustomIntegration { get; set; }
         public int SelectedCustomIntegrationIndex { get; set; }
         public bool IsCustomIntegrationSelected => SelectedCustomIntegration is not null;
+
+        public IEnumerable<RegionPreferenceOption> RegionPreferenceOptions => new RegionPreferenceOption[]
+        {
+            new(RobloxRegionPreference.Auto, Strings.Menu_Integrations_Region_Value_Auto),
+            new(RobloxRegionPreference.Americas, Strings.Menu_Integrations_Region_Value_Americas),
+            new(RobloxRegionPreference.Europe, Strings.Menu_Integrations_Region_Value_Europe),
+            new(RobloxRegionPreference.AsiaPacific, Strings.Menu_Integrations_Region_Value_AsiaPacific),
+            new(RobloxRegionPreference.Oceania, Strings.Menu_Integrations_Region_Value_Oceania),
+            new(RobloxRegionPreference.MiddleEastAfrica, Strings.Menu_Integrations_Region_Value_MiddleEastAfrica),
+        };
+
+        public RobloxRegionPreference PreferredRobloxRegion
+        {
+            get => App.Settings.Prop.PreferredRobloxRegion;
+            set
+            {
+                App.Settings.Prop.PreferredRobloxRegion = value;
+                OnPropertyChanged(nameof(PreferredRobloxRegion));
+                OnPropertyChanged(nameof(IsManualRegionPinned));
+                OnPropertyChanged(nameof(IsRegionToastApplicable));
+            }
+        }
+
+        public bool IsManualRegionPinned => PreferredRobloxRegion != RobloxRegionPreference.Auto;
+
+        public bool IsRegionToastApplicable => PreferredRobloxRegion == RobloxRegionPreference.Auto;
+
+        public bool OfferLowPingServerPickerWhenRegionPinned
+        {
+            get => App.Settings.Prop.OfferLowPingServerPickerWhenRegionPinned;
+            set => App.Settings.Prop.OfferLowPingServerPickerWhenRegionPinned = value;
+        }
+
+        public bool ShowRegionDetectionToastOnLaunch
+        {
+            get => App.Settings.Prop.ShowRegionDetectionToastOnLaunch;
+            set => App.Settings.Prop.ShowRegionDetectionToastOnLaunch = value;
+        }
     }
 }

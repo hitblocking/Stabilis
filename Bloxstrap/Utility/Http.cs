@@ -16,8 +16,8 @@
             request.EnsureSuccessStatusCode();
 
             string json = await request.Content.ReadAsStringAsync();
-            
-            return JsonSerializer.Deserialize<T>(json)!;
+
+            return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
     }
 }

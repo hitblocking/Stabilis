@@ -22,6 +22,7 @@ using Microsoft.Win32;
 using Bloxstrap.AppData;
 using Bloxstrap.RobloxInterfaces;
 using Bloxstrap.UI.Elements.Bootstrapper.Base;
+using Bloxstrap.UI.Elements.Dialogs;
 
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -68,6 +69,8 @@ namespace Bloxstrap
         private AsyncMutex? _mutex;
 
         private int _appPid = 0;
+
+        private LaunchRegionToast? _launchRegionToast;
 
         public IBootstrapperDialog? Dialog = null;
 
@@ -558,6 +561,22 @@ namespace Bloxstrap
         {
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
 
+            if (_launchMode == LaunchMode.Player && App.LaunchSettings.ParsedLaunchPlaceId is long resolvedPlaceId)
+                App.Logger.WriteLine(LOG_IDENT, $"Roblox game URL resolves to place ID {resolvedPlaceId}");
+
+            if (_launchMode == LaunchMode.Player && !App.LaunchSettings.QuietFlag.Active)
+            {
+                try
+                {
+                    PreparePlayerLaunchExperienceAsync().GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Launch region preparation failed");
+                    App.Logger.WriteException(LOG_IDENT, ex);
+                }
+            }
+
             SetStatus(Strings.Bootstrapper_Status_Starting);
 
             RobloxRuntimeOptimizer.ApplyShellPreferencesForExecutable(AppData.ExecutablePath);
@@ -645,16 +664,20 @@ namespace Bloxstrap
                 using var process = Process.Start(startInfo)!;
                 _appPid = process.Id;
 
+                CloseLaunchRegionToast();
+
                 if (_launchMode == LaunchMode.Player || _launchMode == LaunchMode.Studio)
                     RobloxRuntimeOptimizer.ApplyToProcess(_appPid);
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
             {
                 // 1223 = ERROR_CANCELLED, gets thrown if a UAC prompt is cancelled
+                CloseLaunchRegionToast();
                 return;
             }
             catch (Exception)
             {
+                CloseLaunchRegionToast();
                 // attempt a reinstall on next launch
                 File.Delete(AppData.ExecutablePath);
                 throw;
@@ -735,6 +758,91 @@ namespace Bloxstrap
 
             // allow for window to show, since the log is created pretty far beforehand
             Thread.Sleep(1000);
+        }
+
+        private async Task PreparePlayerLaunchExperienceAsync()
+        {
+            RobloxRegionPreference pref = LaunchRegionWorkflow.GetEffectivePreference();
+            long? placeId = App.LaunchSettings.ParsedLaunchPlaceId;
+
+            if (pref != RobloxRegionPreference.Auto
+                && placeId.HasValue
+                && App.Settings.Prop.OfferLowPingServerPickerWhenRegionPinned)
+            {
+                long? universeId = await RobloxPublicServersApi.GetUniverseIdForPlaceAsync(placeId.Value);
+
+                if (!universeId.HasValue)
+                    return;
+
+                var servers = await RobloxPublicServersApi.FetchPublicServersSortedByPingAsync(universeId.Value);
+
+                if (servers.Count == 0)
+                    return;
+
+                string? chosenId = null;
+
+                System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+                {
+                    var dlg = new ServerPickerDialog(servers);
+                    bool? ok = dlg.ShowDialog();
+
+                    if (ok == true)
+                        chosenId = dlg.SelectedServerId;
+                });
+
+                if (!string.IsNullOrEmpty(chosenId))
+                    _launchCommandLine = RobloxLaunchArgsMutator.SetGameInstanceId(_launchCommandLine, chosenId);
+
+                return;
+            }
+
+            if (pref == RobloxRegionPreference.Auto && App.Settings.Prop.ShowRegionDetectionToastOnLaunch)
+            {
+                (string? bucketLine, string? detailLine) = await UserDeviceRegionDetector.GetRegionAnnouncementPartsAsync();
+
+                System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        _launchRegionToast?.Close();
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+
+                    string primary = bucketLine ?? Strings.Dialog_LaunchRegion_Toast_RegionUndetermined;
+                    _launchRegionToast = new LaunchRegionToast(primary, detailLine);
+                    _launchRegionToast.Show();
+                });
+            }
+        }
+
+        private void CloseLaunchRegionToast()
+        {
+            if (_launchRegionToast is null)
+                return;
+
+            try
+            {
+                System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        _launchRegionToast.Close();
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+
+                    _launchRegionToast = null;
+                });
+            }
+            catch
+            {
+                _launchRegionToast = null;
+            }
         }
 
         private bool ShouldRunAsAdmin()

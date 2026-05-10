@@ -865,7 +865,17 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Region.
+        /// </summary>
+        public static string ContextMenu_ServerInformation_Region {
+            get {
+                return ResourceManager.GetString("ContextMenu.ServerInformation.Region", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location: {0}
+        ///Region: {1}
         ///Click for more information.
         /// </summary>
         public static string ContextMenu_ServerInformation_Notification_Text {
@@ -1358,6 +1368,96 @@ namespace Bloxstrap.Resources {
         public static string Dialog_AddFastFlag_Title {
             get {
                 return ResourceManager.GetString("Dialog.AddFastFlag.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your detected region.
+        /// </summary>
+        public static string Dialog_LaunchRegion_Toast_Header {
+            get {
+                return ResourceManager.GetString("Dialog.LaunchRegion.Toast.Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network location: {0}.
+        /// </summary>
+        public static string Dialog_LaunchRegion_Toast_NetworkLocation {
+            get {
+                return ResourceManager.GetString("Dialog.LaunchRegion.Toast.NetworkLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your region couldn&apos;t be estimated from your network..
+        /// </summary>
+        public static string Dialog_LaunchRegion_Toast_RegionUndetermined {
+            get {
+                return ResourceManager.GetString("Dialog.LaunchRegion.Toast.RegionUndetermined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;re in the {0} region (estimated)..
+        /// </summary>
+        public static string Dialog_LaunchRegion_Toast_YouAreIn {
+            get {
+                return ResourceManager.GetString("Dialog.LaunchRegion.Toast.YouAreIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server ID.
+        /// </summary>
+        public static string Dialog_ServerPicker_Column_Id {
+            get {
+                return ResourceManager.GetString("Dialog.ServerPicker.Column.Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping.
+        /// </summary>
+        public static string Dialog_ServerPicker_Column_Ping {
+            get {
+                return ResourceManager.GetString("Dialog.ServerPicker.Column.Ping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Players.
+        /// </summary>
+        public static string Dialog_ServerPicker_Column_Players {
+            get {
+                return ResourceManager.GetString("Dialog.ServerPicker.Column.Players", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Servers are sorted by lowest reported ping from Roblox (may differ from your actual latency). Choose an instance, then click Join..
+        /// </summary>
+        public static string Dialog_ServerPicker_Description {
+            get {
+                return ResourceManager.GetString("Dialog.ServerPicker.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string Dialog_ServerPicker_Join {
+            get {
+                return ResourceManager.GetString("Dialog.ServerPicker.Join", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a public server.
+        /// </summary>
+        public static string Dialog_ServerPicker_Title {
+            get {
+                return ResourceManager.GetString("Dialog.ServerPicker.Title", resourceCulture);
             }
         }
         
@@ -3269,7 +3369,133 @@ namespace Bloxstrap.Resources {
                 return ResourceManager.GetString("Menu.Integrations.QueryServerLocation.Title", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Optional region routing hints for launches that include a place ID (game URL or protocol link). Append **?bloxstrapRegion=Europe** (or **region=**) to a roblox.com game URL to override these defaults for one launch. Ping values come from Roblox&apos;s public server list API (approximate)..
+        /// </summary>
+        public static string Menu_Integrations_Region_Intro {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Intro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to **Auto** uses your device&apos;s public IP (via ipinfo.io) only for the brief launch toast. Choosing a specific region enables the optional server picker before Roblox starts so you can join a public instance with the lowest reported ping in the listing..
+        /// </summary>
+        public static string Menu_Integrations_Region_Preferred_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Preferred.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Preferred region.
+        /// </summary>
+        public static string Menu_Integrations_Region_Preferred_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Preferred.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Region &amp; joining.
+        /// </summary>
+        public static string Menu_Integrations_Region_Section {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Section", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When a preferred region is set and your launch includes a place ID, show a list of public servers sorted by lowest reported ping so you can pick one before joining..
+        /// </summary>
+        public static string Menu_Integrations_Region_ServerPicker_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.ServerPicker.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Low-ping server picker.
+        /// </summary>
+        public static string Menu_Integrations_Region_ServerPicker_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.ServerPicker.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When **Preferred region** is **Auto**, show a small floating hint with your detected geo region until Roblox opens..
+        /// </summary>
+        public static string Menu_Integrations_Region_Toast_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Toast.Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Region detection toast.
+        /// </summary>
+        public static string Menu_Integrations_Region_Toast_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Toast.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Americas.
+        /// </summary>
+        public static string Menu_Integrations_Region_Value_Americas {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Value.Americas", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Asia–Pacific.
+        /// </summary>
+        public static string Menu_Integrations_Region_Value_AsiaPacific {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Value.AsiaPacific", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Auto (detect device).
+        /// </summary>
+        public static string Menu_Integrations_Region_Value_Auto {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Value.Auto", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Europe.
+        /// </summary>
+        public static string Menu_Integrations_Region_Value_Europe {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Value.Europe", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Middle East &amp; Africa.
+        /// </summary>
+        public static string Menu_Integrations_Region_Value_MiddleEastAfrica {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Value.MiddleEastAfrica", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Oceania.
+        /// </summary>
+        public static string Menu_Integrations_Region_Value_Oceania {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.Region.Value.Oceania", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to This feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0})..
         /// </summary>

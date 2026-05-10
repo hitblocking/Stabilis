@@ -15,6 +15,8 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
 
         public string ServerLocation { get; private set; } = Strings.Common_Loading;
 
+        public string ServerRegion { get; private set; } = Strings.Common_Loading;
+
         public Visibility ServerLocationVisibility => App.Settings.Prop.ShowServerDetails ? Visibility.Visible : Visibility.Collapsed;
 
         public ICommand CopyInstanceIdCommand => new RelayCommand(CopyInstanceId);
@@ -36,7 +38,12 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
             else
                 ServerLocation = location;
 
+            ServerRegion = string.IsNullOrEmpty(_activityWatcher.Data.ServerRegion)
+                ? Strings.Common_NotAvailable
+                : _activityWatcher.Data.ServerRegion;
+
             OnPropertyChanged(nameof(ServerLocation));
+            OnPropertyChanged(nameof(ServerRegion));
         }
 
         private void CopyInstanceId() => Clipboard.SetDataObject(InstanceId);

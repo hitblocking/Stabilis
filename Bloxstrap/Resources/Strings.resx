@@ -259,8 +259,12 @@
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>Location</value>
   </data>
+  <data name="ContextMenu.ServerInformation.Region" xml:space="preserve">
+    <value>Region</value>
+  </data>
   <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
     <value>Location: {0}
+Region: {1}
 Click for more information</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
@@ -274,6 +278,36 @@ Click for more information</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
     <value>Add Fast Flag</value>
+  </data>
+  <data name="Dialog.LaunchRegion.Toast.Header" xml:space="preserve">
+    <value>Your region</value>
+  </data>
+  <data name="Dialog.LaunchRegion.Toast.NetworkLocation" xml:space="preserve">
+    <value>Network location: {0}</value>
+  </data>
+  <data name="Dialog.LaunchRegion.Toast.RegionUndetermined" xml:space="preserve">
+    <value>Your region couldn&apos;t be estimated from your network.</value>
+  </data>
+  <data name="Dialog.LaunchRegion.Toast.YouAreIn" xml:space="preserve">
+    <value>You&apos;re in the {0} region (estimated).</value>
+  </data>
+  <data name="Dialog.ServerPicker.Column.Id" xml:space="preserve">
+    <value>Server ID</value>
+  </data>
+  <data name="Dialog.ServerPicker.Column.Ping" xml:space="preserve">
+    <value>Ping</value>
+  </data>
+  <data name="Dialog.ServerPicker.Column.Players" xml:space="preserve">
+    <value>Players</value>
+  </data>
+  <data name="Dialog.ServerPicker.Description" xml:space="preserve">
+    <value>Servers are sorted by lowest reported ping from Roblox (may differ from your actual latency). Choose an instance, then click Join.</value>
+  </data>
+  <data name="Dialog.ServerPicker.Join" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="Dialog.ServerPicker.Title" xml:space="preserve">
+    <value>Choose a public server</value>
   </data>
   <data name="Dialog.Connectivity.MoreInfo" xml:space="preserve">
     <value>More information:</value>
@@ -646,6 +680,48 @@ Selecting 'No' will ignore this warning and continue installation.</value>
   </data>
   <data name="Menu.Integrations.Description" xml:space="preserve">
     <value>Configure additional functionality to go alongside Roblox.</value>
+  </data>
+  <data name="Menu.Integrations.Region.Intro" xml:space="preserve">
+    <value>Optional region routing hints for launches that include a place ID (game URL or protocol link). Append **?bloxstrapRegion=Europe** (or **region=**) to a roblox.com game URL to override these defaults for one launch. Ping values come from Roblox&apos;s public server list API (approximate).</value>
+  </data>
+  <data name="Menu.Integrations.Region.Preferred.Description" xml:space="preserve">
+    <value>**Auto** uses your device&apos;s public IP (via ipinfo.io) only for the brief launch toast. Choosing a specific region enables the optional server picker before Roblox starts so you can join a public instance with the lowest reported ping in the listing.</value>
+  </data>
+  <data name="Menu.Integrations.Region.Preferred.Title" xml:space="preserve">
+    <value>Preferred region</value>
+  </data>
+  <data name="Menu.Integrations.Region.Section" xml:space="preserve">
+    <value>Region &amp; joining</value>
+  </data>
+  <data name="Menu.Integrations.Region.ServerPicker.Description" xml:space="preserve">
+    <value>When a preferred region is set and your launch includes a place ID, show a list of public servers sorted by lowest reported ping so you can pick one before joining.</value>
+  </data>
+  <data name="Menu.Integrations.Region.ServerPicker.Title" xml:space="preserve">
+    <value>Low-ping server picker</value>
+  </data>
+  <data name="Menu.Integrations.Region.Toast.Description" xml:space="preserve">
+    <value>When **Preferred region** is **Auto**, show a small floating hint with your detected geo region until Roblox opens.</value>
+  </data>
+  <data name="Menu.Integrations.Region.Toast.Title" xml:space="preserve">
+    <value>Region detection toast</value>
+  </data>
+  <data name="Menu.Integrations.Region.Value.Americas" xml:space="preserve">
+    <value>Americas</value>
+  </data>
+  <data name="Menu.Integrations.Region.Value.AsiaPacific" xml:space="preserve">
+    <value>Asia–Pacific</value>
+  </data>
+  <data name="Menu.Integrations.Region.Value.Auto" xml:space="preserve">
+    <value>Auto (detect device)</value>
+  </data>
+  <data name="Menu.Integrations.Region.Value.Europe" xml:space="preserve">
+    <value>Europe</value>
+  </data>
+  <data name="Menu.Integrations.Region.Value.MiddleEastAfrica" xml:space="preserve">
+    <value>Middle East &amp; Africa</value>
+  </data>
+  <data name="Menu.Integrations.Region.Value.Oceania" xml:space="preserve">
+    <value>Oceania</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Description" xml:space="preserve">
     <value>Roblox will fully close when you leave a game instead of going back to the app. [Will break some things!]({0})</value>

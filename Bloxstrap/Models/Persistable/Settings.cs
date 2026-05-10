@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 
+using Bloxstrap.Enums;
+
 namespace Bloxstrap.Models.Persistable
 {
     public class Settings
@@ -30,6 +32,23 @@ namespace Bloxstrap.Models.Persistable
         public bool HideRPCButtons { get; set; } = true;
         public bool ShowAccountOnRichPresence { get; set; } = false;
         public bool ShowServerDetails { get; set; } = false;
+
+        /// <summary>
+        /// When not <see cref="RobloxRegionPreference.Auto"/>, optional low-ping public server picker may run before launch (needs a place ID).
+        /// Can be overridden per launch with <c>?bloxstrapRegion=</c> / <c>?region=</c> on the game URL.
+        /// </summary>
+        public RobloxRegionPreference PreferredRobloxRegion { get; set; } = RobloxRegionPreference.Auto;
+
+        /// <summary>
+        /// When preference is Auto, show a short toast with geo-IP region detection until Roblox starts.
+        /// </summary>
+        public bool ShowRegionDetectionToastOnLaunch { get; set; } = true;
+
+        /// <summary>
+        /// When preference is not Auto and a place ID is known, prompt to join a specific public server chosen by lowest reported ping (Roblox API).
+        /// </summary>
+        public bool OfferLowPingServerPickerWhenRegionPinned { get; set; } = true;
+
         public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = new();
 
         // mod preset configuration
